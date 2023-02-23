@@ -10,7 +10,11 @@ class PostRepository implements PostRepositoryInterface
 
     public function getAll()
     {
-        return Post::filter(request(['tag', 'search']))->paginate(10);
+        $sort = request('sortBy', 'latest');
+        if ( !in_array( $sort, ['latest', 'popular'] ) ){
+            $sort = 'latest';
+        }
+        return Post::filter(request(['tag', 'search'], $sort))->paginate(10);
     }
 
 

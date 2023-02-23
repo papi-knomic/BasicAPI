@@ -29,6 +29,7 @@ class PostController extends Controller
      */
     public function index()
     {
+
         $posts = $this->postRepository->getAll();
         $posts = PostResource::collection($posts)->response()->getData(true);
         return Response::successResponseWithData( $posts, 'Posts gotten');
@@ -105,7 +106,11 @@ class PostController extends Controller
         if (! $user ) {
             return Response::errorResponse('User not found');
         }
-        $posts = $user->posts()->filter(request(['tag', 'search']))->paginate(10);
+        $sort = request('sortBy', 'latest');
+        if ( !in_array( $sort, ['latest', 'popular'] ) ){
+            $sort = 'latest';
+        }
+        $posts = $user->posts()->filter(request(['tag', 'search']), $sort)->paginate(10);
         $posts = PostResource::collection($posts)->response()->getData(true);
         return Response::successResponseWithData( $posts, 'Posts gotten');
     }

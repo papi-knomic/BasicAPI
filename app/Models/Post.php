@@ -17,7 +17,7 @@ class Post extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function scopeFilter( $query, array $filters, $sort = 'popular' )
+    public function scopeFilter( $query, array $filters, $sort = 'latest' )
     {
         switch ($sort) {
             case 'popular':
