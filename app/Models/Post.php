@@ -17,8 +17,18 @@ class Post extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function scopeFilter( $query, array $filters)
+    public function scopeFilter( $query, array $filters, $sort = 'popular' )
     {
+        switch ($sort) {
+            case 'popular':
+                $query->orderBy('views_count', 'desc');
+                break;
+            case 'latest':
+            default:
+                $query->latest('updated_at');
+                break;
+        }
+
         if($filters['tag'] ?? false){
             $query->where('tags', 'like', '%' . request('tag') . '%');
         }

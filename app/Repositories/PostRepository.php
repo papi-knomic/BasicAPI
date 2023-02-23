@@ -10,7 +10,7 @@ class PostRepository implements PostRepositoryInterface
 
     public function getAll()
     {
-        return Post::latest('updated_at')->filter(request(['tag', 'search']))->paginate(10);
+        return Post::filter(request(['tag', 'search']))->paginate(10);
     }
 
 

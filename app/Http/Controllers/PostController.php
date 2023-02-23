@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Resources\PostResource;
+use App\Jobs\IncrementPostViewJob;
 use App\Models\Post;
 use App\Models\User;
 use App\Repositories\PostRepository;
@@ -56,11 +57,8 @@ class PostController extends Controller
      */
     public function show(Post $post): JsonResponse
     {
-        // increment the view count by 1
-        $post->increment('views_count');
-
+        IncrementPostViewJob::dispatchAfterResponse($post);
         $post = new PostResource($post);
-
         return Response::successResponseWithData($post);
     }
 
@@ -107,7 +105,7 @@ class PostController extends Controller
         if (! $user ) {
             return Response::errorResponse('User not found');
         }
-        $posts = $user->posts()->latest('updated_at')->paginate(10);
+        $posts = $user->posts()->filter(request(['tag', 'search']))->paginate(10);
         $posts = PostResource::collection($posts)->response()->getData(true);
         return Response::successResponseWithData( $posts, 'Posts gotten');
     }
