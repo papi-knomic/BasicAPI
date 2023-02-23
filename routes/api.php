@@ -60,9 +60,7 @@ Route::group(['middleware' => ['json']], function () {
             Route::put('/{post}', [PostController::class, 'update']);
         });
     });
+
+    //logout
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
-
-
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
