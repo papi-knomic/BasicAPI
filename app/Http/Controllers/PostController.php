@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Resources\PostResource;
+use App\Models\Listing;
 use App\Models\Post;
+use App\Models\User;
 use App\Repositories\PostRepository;
 use App\Traits\Response;
-use http\Client\Curl\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -103,12 +104,17 @@ class PostController extends Controller
     public function getUserPosts(Request $request ) : JsonResponse
     {
         $username = $request->username;
-        $user =\App\Models\User::whereUsername($username)->first();
+        $user = User::whereUsername($username)->first();
         if (! $user ) {
             return Response::errorResponse('User not found');
         }
-        $posts = $user->posts;
+        $posts = $user->posts()->latest('updated_at')->paginate(10);
         $posts = PostResource::collection($posts)->response()->getData(true);
         return Response::successResponseWithData( $posts, 'Posts gotten');
+    }
+
+    public function search( Request $request ) :JsonResponse
+    {
+        return Post::latest()->filter(request(['tag', 'search']))->paginate(10);
     }
 }
