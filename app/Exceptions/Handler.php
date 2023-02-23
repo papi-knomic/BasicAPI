@@ -2,7 +2,14 @@
 
 namespace App\Exceptions;
 
+use App\Traits\Response;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -34,8 +41,30 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function(Exception $e, $request) {
+            if ($e instanceof NotFoundHttpException) {
+                return Response::errorResponse('The specified resource cannot be  found!.', 404);
+            }
+            if ($e instanceof ModelNotFoundException) {
+                $model = $e->getModel();
+                return Response::errorResponse("$model cannot be  found!.", 404);
+            }
+            if ($e instanceof  AccessDeniedHttpException) {
+                return Response::errorResponse('You are not authorised to do this');
+            }
+            if ($e instanceof  HttpException) {
+                $message = $e->getMessage();
+                return Response::errorResponse($message);
+            }
+            if ($e instanceof QueryException) {
+                $message = $e->getMessage();
+                return Response::errorResponse('Database error');
+            }
         });
+
+        $this->reportable(function (Throwable $e) {
+        });
+
+
     }
 }
