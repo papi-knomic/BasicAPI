@@ -6,7 +6,6 @@ use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\ProfileResource;
-use App\Http\Resources\ProfileViewResource;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Traits\Response;
@@ -68,7 +67,7 @@ class AuthController extends Controller
             ->with('profilePicture')
             ->first();
         if ( $user ) {
-            $profileResource = new ProfileViewResource($user);
+            $profileResource = new ProfileResource($user);
             return Response::successResponseWithData($profileResource,'Success');
         }
 
