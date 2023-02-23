@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::group(['middleware' => ['json']], function () {
+Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
     Route::get('/', function () {
         return Response::successResponse('Welcome to Basic API');
     });
@@ -64,3 +64,6 @@ Route::group(['middleware' => ['json']], function () {
     //logout
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+
+
