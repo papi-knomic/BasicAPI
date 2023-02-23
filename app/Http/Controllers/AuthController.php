@@ -33,7 +33,7 @@ class AuthController extends Controller
 
         $user = $this->userRepository->create($fields);
 
-        return Response::successResponseWithData($user, 'Successful!, check your mail for verification code');
+        return Response::successResponseWithData($user, 'Successful!');
     }
 
     public function login( LoginUserRequest $request ) : JsonResponse

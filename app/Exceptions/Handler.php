@@ -58,7 +58,7 @@ class Handler extends ExceptionHandler
             }
             if ($e instanceof QueryException) {
                 $message = $e->getMessage();
-                return Response::errorResponse('Database error');
+                return Response::errorResponse($message);
             }
         });
 
