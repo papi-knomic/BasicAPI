@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Traits\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,11 @@ Route::group(['middleware' => ['json']], function () {
     Route::get('/', function () {
         return Response::successResponse('Welcome to Basic API');
     });
+
+    //register
+    Route::post('/register', [AuthController::class, 'register']);
+    //login
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
 

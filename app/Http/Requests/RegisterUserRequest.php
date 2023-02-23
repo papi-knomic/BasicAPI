@@ -29,14 +29,7 @@ class RegisterUserRequest extends FormRequest
             'username' => 'required|string|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'location' => 'required|string',
-            'skills' => 'required|string',
-            'github_url' => 'nullable|url',
             'bio' => 'required|string|min:50|max:500',
-            'portfolio' => 'nullable|string',
-            'interests' => 'nullable|string',
-            'current_position' => 'nullable|string',
-            'languages' => 'nullable|string'
         ];
     }
 }
