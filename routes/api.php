@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfilePictureController;
 use App\Traits\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,10 @@ Route::group(['middleware' => ['json']], function () {
             Route::get('/profile', [AuthController::class, 'profile']);
             //update
             Route::post('/profile', [AuthController::class, 'update']);
+            //get profile picture
+            Route::get('/profile-picture', [ ProfilePictureController::class, 'show']);
+            //post profile picture
+            Route::post('/profile-picture', [ ProfilePictureController::class, 'store']);
         });
     });
 });
