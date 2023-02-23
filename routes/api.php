@@ -24,6 +24,20 @@ Route::group(['middleware' => ['json']], function () {
     Route::post('/register', [AuthController::class, 'register']);
     //login
     Route::post('/login', [AuthController::class, 'login']);
+
+    //view profile
+    Route::get('/profile/{username}', [AuthController::class, 'viewProfile']);
+
+
+    //protected routes
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::prefix('account')->group(function () {
+            //view your profile
+            Route::get('/profile', [AuthController::class, 'profile']);
+            //update
+            Route::post('/profile', [AuthController::class, 'update']);
+        });
+    });
 });
 
 
