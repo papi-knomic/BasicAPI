@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UploadProfilePictureRequest;
-use App\Http\Resources\ProfilePictureResource;
 use App\Jobs\ProfilePictureJob;
 use App\Models\ProfilePicture;
 use App\Traits\Response;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -18,10 +16,10 @@ class ProfilePictureController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
-//     * @return JsonResponse
+     * @param UploadProfilePictureRequest $request
+     * @return JsonResponse
      */
-    public function store(UploadProfilePictureRequest $request)
+    public function store(UploadProfilePictureRequest $request): JsonResponse
     {
         $request->validated();
         $file = $request->file('image');
@@ -56,24 +54,13 @@ class ProfilePictureController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param ProfilePicture $profilePicture
+     * @param Request $request
      * @return JsonResponse
      */
-    public function show(Request $request)
+    public function show(Request $request): JsonResponse
     {
         $profilePictureResource = ProfilePicture::where('user_id', auth()->id() )->first()->pluck('url');
 
         return Response::successResponseWithData($profilePictureResource);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param ProfilePicture $profilePicture
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request)
-    {
-
     }
 }
