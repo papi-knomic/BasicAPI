@@ -29,6 +29,8 @@ Route::group(['middleware' => ['json']], function () {
 
     //view profile
     Route::get('/profile/{username}', [AuthController::class, 'viewProfile']);
+    //get user posts by username
+    Route::get('/{username}/posts' , [PostController::class, 'getUserPosts']);
 
     //get all posts
     Route::get('/posts', [PostController::class, 'index']);

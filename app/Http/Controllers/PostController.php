@@ -7,6 +7,7 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Repositories\PostRepository;
 use App\Traits\Response;
+use http\Client\Curl\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -97,5 +98,17 @@ class PostController extends Controller
         $post->delete();
 
         return Response::successResponse();
+    }
+
+    public function getUserPosts(Request $request ) : JsonResponse
+    {
+        $username = $request->username;
+        $user =\App\Models\User::whereUsername($username)->first();
+        if (! $user ) {
+            return Response::errorResponse('User not found');
+        }
+        $posts = $user->posts;
+        $posts = PostResource::collection($posts)->response()->getData(true);
+        return Response::successResponseWithData( $posts, 'Posts gotten');
     }
 }
