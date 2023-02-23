@@ -15,3 +15,11 @@ if ( ! function_exists('generatePostSlug') ) {
         return $slug;
     }
 }
+
+if ( ! function_exists('generatePostExcerpt') ) {
+    function generatePostExcerpt( string $body ) : string {
+
+        // Generate an excerpt
+        return Str::limit($body);
+    }
+}

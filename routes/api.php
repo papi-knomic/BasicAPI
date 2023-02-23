@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfilePictureController;
 use App\Traits\Response;
 use Illuminate\Http\Request;
@@ -29,6 +30,9 @@ Route::group(['middleware' => ['json']], function () {
     //view profile
     Route::get('/profile/{username}', [AuthController::class, 'viewProfile']);
 
+    //get all posts
+    Route::get('/posts', [PostController::class, 'index']);
+
 
     //protected routes
     Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -41,6 +45,10 @@ Route::group(['middleware' => ['json']], function () {
             Route::get('/profile-picture', [ ProfilePictureController::class, 'show']);
             //post profile picture
             Route::post('/profile-picture', [ ProfilePictureController::class, 'store']);
+        });
+
+        Route::prefix('posts')->group( function () {
+            Route::post('/', [PostController::class, 'store']);
         });
     });
 });

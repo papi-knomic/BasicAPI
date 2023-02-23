@@ -18,6 +18,9 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->text('body');
             $table->string('slug')->unique();
+            $table->string('tags');
+            $table->string('excerpt');
+            $table->integer('views_count')->default(0);
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
