@@ -26,7 +26,8 @@ class PostObserver
 
     public function retrieved(Post $post)
     {
-        // Increase the view_count by 1
-        $post->increment('view_count');
+        if (!request()->is('api/posts')) {
+            $post->increment('views_count');
+        }
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePostRequest;
-use App\Http\Resources\JobResource;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Repositories\PostRepository;
@@ -44,6 +43,7 @@ class PostController extends Controller
     {
         $fields = $request->validated();
         $post = $this->postRepository->create( $fields );
+        $post = new PostResource($post);
         return Response::successResponseWithData( $post, 'Post created', 201 );
     }
 
