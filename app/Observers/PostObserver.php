@@ -23,11 +23,4 @@ class PostObserver
         $post->slug = generatePostSlug($post->title);
         $post->excerpt = generatePostExcerpt($post->body);
     }
-
-    public function retrieved(Post $post)
-    {
-        if (!request()->is('api/posts')) {
-            $post->increment('views_count');
-        }
-    }
 }

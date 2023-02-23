@@ -31,7 +31,10 @@ class PostRepository implements PostRepositoryInterface
 
     public function update(int $id, array $data)
     {
-        // TODO: Implement update() method.
+        $job = Post::find($id);
+        $job->update($data);
+
+        return $job;
     }
 
     public function delete(int $id)

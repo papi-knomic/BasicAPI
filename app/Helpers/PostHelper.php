@@ -23,3 +23,9 @@ if ( ! function_exists('generatePostExcerpt') ) {
         return Str::limit($body);
     }
 }
+
+if ( ! function_exists( 'checkPostCreator') ) {
+    function checkPostCreator( Post $post ): bool {
+        return auth()->id() == $post->user_id;
+     }
+}

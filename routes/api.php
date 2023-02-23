@@ -32,6 +32,8 @@ Route::group(['middleware' => ['json']], function () {
 
     //get all posts
     Route::get('/posts', [PostController::class, 'index']);
+    //get single post
+    Route::get('/post/{post}', [PostController::class, 'show']);
 
 
     //protected routes
@@ -47,8 +49,13 @@ Route::group(['middleware' => ['json']], function () {
             Route::post('/profile-picture', [ ProfilePictureController::class, 'store']);
         });
 
-        Route::prefix('posts')->group( function () {
+        Route::prefix('post')->group( function () {
+            //create post
             Route::post('/', [PostController::class, 'store']);
+            //delete post
+            Route::delete('/{post}', [PostController::class, 'destroy']);
+            //update
+            Route::put('/{post}', [PostController::class, 'update']);
         });
     });
 });

@@ -36,7 +36,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param CreatePostRequest $request
      * @return JsonResponse
      */
     public function store(CreatePostRequest $request): JsonResponse
@@ -50,35 +50,52 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
+     * @param Post $post
+     * @return JsonResponse
      */
-    public function show(Post $post)
+    public function show(Post $post): JsonResponse
     {
-        //
+        // increment the view count by 1
+        $post->increment('views_count');
+
+        $post = new PostResource($post);
+
+        return Response::successResponseWithData($post);
     }
 
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
+     * @param CreatePostRequest $request
+     * @param Post $post
+     * @return JsonResponse
      */
-    public function update(Request $request, Post $post)
+    public function update(CreatePostRequest $request, Post $post) : JsonResponse
     {
-        //
+        if ( !checkPostCreator($post) ){
+            return Response::errorResponse('You are not authorised to do this');
+        }
+        $fields = $request->validated();
+        $post = $this->postRepository->update( $post->id, $fields );
+        $post = new PostResource($post);
+        return Response::successResponseWithData( $post, 'Post updated', 201 );
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
+     * @param Post $post
+     * @return JsonResponse
      */
     public function destroy(Post $post)
     {
-        //
+        if ( !checkPostCreator($post) ){
+            return Response::errorResponse('You are not authorised to do this');
+        }
+
+        $post->delete();
+
+        return Response::successResponse();
     }
 }
