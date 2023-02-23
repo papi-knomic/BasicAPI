@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Resources\PostResource;
-use App\Models\Listing;
 use App\Models\Post;
 use App\Models\User;
 use App\Repositories\PostRepository;
@@ -111,10 +110,5 @@ class PostController extends Controller
         $posts = $user->posts()->latest('updated_at')->paginate(10);
         $posts = PostResource::collection($posts)->response()->getData(true);
         return Response::successResponseWithData( $posts, 'Posts gotten');
-    }
-
-    public function search( Request $request ) :JsonResponse
-    {
-        return Post::latest()->filter(request(['tag', 'search']))->paginate(10);
     }
 }
