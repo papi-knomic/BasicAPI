@@ -33,10 +33,6 @@ class IncrementPostViewJob implements ShouldQueue
      */
     public function handle()
     {
-        $post = $this->post;
-        $post->views_count++;
-        DB::table('posts')
-            ->where('id', $post->id)
-            ->increment('views_count', 1, ['updated_at' => $post->updated_at]);
+        $this->post->increment('views_count');
     }
 }

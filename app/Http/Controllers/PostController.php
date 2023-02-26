@@ -29,8 +29,15 @@ class PostController extends Controller
      */
     public function index()
     {
-
-        $posts = $this->postRepository->getAll();
+        $sort = request('sort_by', 'latest');
+        if ( !in_array( $sort, ['latest', 'popular'] ) ){
+            $sort = 'latest';
+        }
+        $filters = [
+            'tag' => request('tag'),
+            'search' => request('search')
+        ];
+        $posts = $this->postRepository->getAll( $filters, $sort );
         $posts = PostResource::collection($posts)->response()->getData(true);
         return Response::successResponseWithData( $posts, 'Posts gotten');
     }
@@ -99,18 +106,17 @@ class PostController extends Controller
         return Response::successResponse();
     }
 
-    public function getUserPosts(Request $request ) : JsonResponse
+    public function getUserPosts(User $user ) : JsonResponse
     {
-        $username = $request->username;
-        $user = User::whereUsername($username)->first();
-        if (! $user ) {
-            return Response::errorResponse('User not found');
-        }
-        $sort = request('sortBy', 'latest');
+        $sort = request('sort_by', 'latest');
         if ( !in_array( $sort, ['latest', 'popular'] ) ){
             $sort = 'latest';
         }
-        $posts = $user->posts()->filter(request(['tag', 'search']), $sort)->paginate(10);
+        $filters = [
+            'tag' => request('tag'),
+            'search' => request('search')
+        ];
+        $posts = $user->posts()->filter($filters, $sort)->paginate(10);
         $posts = PostResource::collection($posts)->response()->getData(true);
         return Response::successResponseWithData( $posts, 'Posts gotten');
     }

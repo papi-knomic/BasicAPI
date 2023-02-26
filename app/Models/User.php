@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->hasMany( Post::class, 'user_id', 'id');
     }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where('username', $value)->orWhere('id', $value)->firstOrFail();
+    }
 }

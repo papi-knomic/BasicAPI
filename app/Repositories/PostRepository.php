@@ -8,13 +8,9 @@ use App\Models\Post;
 class PostRepository implements PostRepositoryInterface
 {
 
-    public function getAll()
+    public function getAll( array $filters, string $sort )
     {
-        $sort = request('sortBy', 'latest');
-        if ( !in_array( $sort, ['latest', 'popular'] ) ){
-            $sort = 'latest';
-        }
-        return Post::filter(request(['tag', 'search'], $sort))->paginate(10);
+        return Post::filter($filters, $sort)->paginate(10);
     }
 
 

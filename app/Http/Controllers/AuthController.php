@@ -60,18 +60,10 @@ class AuthController extends Controller
         return Response::successResponseWithData($profileResource, 'Profile data gotten', 200, $accessToken);
     }
 
-    public function viewProfile( Request $request ): JsonResponse
+    public function viewProfile( User $user ): JsonResponse
     {
-        $username = $request->username;
-        $user = User::whereUsername($username)
-            ->with('profilePicture')
-            ->first();
-        if ( $user ) {
-            $profileResource = new ProfileResource($user);
-            return Response::successResponseWithData($profileResource,'Success');
-        }
-
-        return Response::errorResponse('User not found', 404);
+        $profileResource = new ProfileResource($user);
+        return Response::successResponseWithData($profileResource,'Success');
     }
 
     public function update( UpdateProfileRequest $request ) : JsonResponse

@@ -19,24 +19,24 @@ class Post extends Model
 
     public function scopeFilter( $query, array $filters, $sort = 'latest' )
     {
-        switch ($sort) {
-            case 'popular':
-                $query->orderBy('views_count', 'desc');
-                break;
-            case 'latest':
-            default:
-                $query->latest('updated_at');
-                break;
-        }
 
-        if($filters['tag'] ?? false){
-            $query->where('tags', 'like', '%' . request('tag') . '%');
-        }
-        if($filters['search'] ?? false){
-            $query->where('title', 'like', '%' . request('search') . '%')
-                ->orWhere('body', 'like', '%' . request('search') . '%')
-                ->orWhere('tags', 'like', '%' . request('search') . '%');
-        }
+        $query->when( $sort === 'popular', function ($query) {
+            $query->orderBy('views_count', 'desc');
+        }, function ($query) {
+            $query->latest('created_at');
+        } );
+
+
+        $query->when($filters['search'] ?? false, function ($query) use($filters) {
+            $query->where('tags', 'like', '%' . $filters['tag'] . '%');
+        } );
+
+        $query->when($filters['search'] ?? false, function ($query) use($filters) {
+            $query->where('title', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('body', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('tags', 'like', '%' . $filters['search'] . '%');
+        } );
+
     }
 
 }
