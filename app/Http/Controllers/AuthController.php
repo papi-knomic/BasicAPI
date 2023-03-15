@@ -32,7 +32,7 @@ class AuthController extends Controller
 
         $user = $this->userRepository->create($fields);
 
-        return Response::successResponseWithData($user, 'Successful!');
+        return Response::successResponseWithData($user, 'Successful!', 201 );
     }
 
     public function login( LoginUserRequest $request ) : JsonResponse
