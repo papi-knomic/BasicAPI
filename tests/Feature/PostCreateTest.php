@@ -11,7 +11,7 @@ class PostCreateTest extends TestCase
 {
     use RefreshDatabase;
 
-    private string $endpoint = 'api/post';
+    protected $endpoint = 'api/post';
 
     /**
      * A basic feature test example.

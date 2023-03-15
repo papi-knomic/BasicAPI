@@ -12,7 +12,7 @@ class RegisterUserTest extends TestCase
 {
     use RefreshDatabase;
 
-    private string $register = 'api/register';
+    protected $endpoint = 'api/register';
 
 
     /**
@@ -22,26 +22,26 @@ class RegisterUserTest extends TestCase
      */
     public function test_register_endpoint()
     {
-        $response = $this->post( $this->register );
+        $response = $this->post( $this->endpoint );
 
         $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY );
     }
 
     public function test_firstname_missing() {
-        $this->post( $this->register )
+        $this->post( $this->endpoint )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['first_name']]);
     }
 
     public function test_lastname_missing() {
-        $this->post( $this->register )
+        $this->post( $this->endpoint )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['last_name']]);
     }
 
 
     public function test_username_missing() {
-        $this->post( $this->register )
+        $this->post( $this->endpoint )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['username']]);
     }
@@ -49,13 +49,13 @@ class RegisterUserTest extends TestCase
     public function test_username_is_not_unique() {
         $user = User::factory()->create();
 
-        $this->post( $this->register, ['username' => $user->username ] )
+        $this->post( $this->endpoint, ['username' => $user->username ] )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['username']]);
     }
 
     public function test_email_missing() {
-        $this->post( $this->register )
+        $this->post( $this->endpoint )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['email']]);
     }
@@ -63,14 +63,14 @@ class RegisterUserTest extends TestCase
     public function test_email_is_not_unique() {
         $user = User::factory()->create();
 
-        $this->post( $this->register, ['email' => $user->email ] )
+        $this->post( $this->endpoint, ['email' => $user->email ] )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['email']]);
     }
 
     public function test_password_missing()
     {
-        $response = $this->post($this->register, [
+        $response = $this->post($this->endpoint, [
             'password' => '',
             'password_confirmation' => '',
         ]);
@@ -80,7 +80,7 @@ class RegisterUserTest extends TestCase
 
     public function test_password_length_less_than_8()
     {
-        $response = $this->post($this->register, [
+        $response = $this->post($this->endpoint, [
             'password' => 'pass',
             'password_confirmation' => 'pass',
         ]);
@@ -90,7 +90,7 @@ class RegisterUserTest extends TestCase
 
     public function test_password_not_confirmed()
     {
-        $response = $this->post($this->register, [
+        $response = $this->post($this->endpoint, [
             'password' => 'password123',
             'password_confirmation' => '',
         ]);
@@ -100,7 +100,7 @@ class RegisterUserTest extends TestCase
 
     public function test_bio_missing()
     {
-        $response = $this->post($this->register);
+        $response = $this->post($this->endpoint);
 
         $response->assertJsonStructure(['errors'=>['bio']]);
     }
@@ -109,7 +109,7 @@ class RegisterUserTest extends TestCase
     {
         $faker = Faker::create();
         $text = $faker->text( 40 );
-        $response = $this->post($this->register, [
+        $response = $this->post($this->endpoint, [
                 'bio' => $text
             ]
         );
@@ -122,7 +122,7 @@ class RegisterUserTest extends TestCase
         $faker = Faker::create();
         $text = $faker->text( 700 );
         $specificLengthString = str_pad($text, 700, "afjfjf");
-        $response = $this->post($this->register, [
+        $response = $this->post($this->endpoint, [
                 'bio' => $specificLengthString
             ]
         );
@@ -135,7 +135,7 @@ class RegisterUserTest extends TestCase
         $user = User::factory()->raw();
         $user['password_confirmation'] = $user['password'];
 
-        $this->post($this->register, $user)
+        $this->post($this->endpoint, $user)
             ->assertStatus(self::HTTP_CREATED )
             ->assertJsonStructure(['data' => ['first_name']]);
     }

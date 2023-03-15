@@ -8,7 +8,7 @@ use Faker\Factory as Faker;
 class ViewProfileTest extends TestCase
 {
 
-    private $endpoint = 'api/profile';
+    protected $endpoint = 'api/profile';
 
     /**
      * A basic unit test example.

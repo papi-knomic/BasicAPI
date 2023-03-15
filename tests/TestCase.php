@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -27,4 +28,6 @@ abstract class TestCase extends BaseTestCase
     const HTTP_METHOD_PUT = 'PUT';
     const HTTP_METHOD_PATCH = 'PATCH';
     const HTTP_METHOD_DELETE = 'DELETE';
+
+    protected $endpoint = '';
 }

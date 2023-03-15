@@ -9,7 +9,7 @@ class LoginUserTest extends TestCase
 {
     use RefreshDatabase;
 
-    private string $endpoint = 'api/login';
+    protected $endpoint = 'api/login';
 
 
     public function test_login_endpoint()
