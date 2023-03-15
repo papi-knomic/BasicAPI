@@ -63,7 +63,7 @@ class RegisterUserTest extends TestCase
     public function test_email_is_not_unique() {
         $user = User::factory()->create();
 
-        $this->post( $this->register, ['username' => $user->email ] )
+        $this->post( $this->register, ['email' => $user->email ] )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['email']]);
     }
