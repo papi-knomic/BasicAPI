@@ -109,9 +109,8 @@ class RegisterUserTest extends TestCase
     {
         $faker = Faker::create();
         $text = $faker->text( 40 );
-        $specificLengthString = str_pad($text, 40, " ");
         $response = $this->post($this->register, [
-                'bio' => $specificLengthString
+                'bio' => $text
             ]
         );
 
@@ -122,7 +121,7 @@ class RegisterUserTest extends TestCase
     {
         $faker = Faker::create();
         $text = $faker->text( 700 );
-        $specificLengthString = str_pad($text, 700, " ");
+        $specificLengthString = str_pad($text, 700, "afjfjf");
         $response = $this->post($this->register, [
                 'bio' => $specificLengthString
             ]
