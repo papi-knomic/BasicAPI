@@ -35,11 +35,12 @@ class PostController extends Controller
         }
         $filters = [
             'tag' => request('tag'),
-            'search' => request('search')
+            'search' => request('search'),
+            'sort' => $sort
         ];
-        $posts = $this->postRepository->getAll( $filters, $sort );
+        $posts = $this->postRepository->getAll( $filters );
         $posts = PostResource::collection($posts)->response()->getData(true);
-        return Response::successResponseWithData( $posts, 'Posts gotten');
+        return Response::successResponseWithData($posts, 'Posts gotten');
     }
 
 
@@ -52,9 +53,9 @@ class PostController extends Controller
     public function store(CreatePostRequest $request): JsonResponse
     {
         $fields = $request->validated();
-        $post = $this->postRepository->create( $fields );
+        $post = $this->postRepository->create($fields);
         $post = new PostResource($post);
-        return Response::successResponseWithData( $post, 'Post created', 201 );
+        return Response::successResponseWithData($post, 'Post created', 201);
     }
 
     /**
@@ -86,7 +87,7 @@ class PostController extends Controller
         $fields = $request->validated();
         $post = $this->postRepository->update( $post->id, $fields );
         $post = new PostResource($post);
-        return Response::successResponseWithData( $post, 'Post updated', 201 );
+        return Response::successResponseWithData($post, 'Post updated', 201);
     }
 
     /**
@@ -118,6 +119,6 @@ class PostController extends Controller
         ];
         $posts = $user->posts()->filter($filters, $sort)->paginate(10);
         $posts = PostResource::collection($posts)->response()->getData(true);
-        return Response::successResponseWithData( $posts, 'Posts gotten');
+        return Response::successResponseWithData($posts, 'Posts gotten');
     }
 }

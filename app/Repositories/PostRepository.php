@@ -8,8 +8,9 @@ use App\Models\Post;
 class PostRepository implements PostRepositoryInterface
 {
 
-    public function getAll( array $filters, string $sort )
+    public function getAll( array $filters)
     {
+        $sort = $filters['sort'];
         return Post::filter($filters, $sort)->paginate(10);
     }
 
