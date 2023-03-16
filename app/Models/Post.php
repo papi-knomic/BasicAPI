@@ -18,6 +18,7 @@ class Post extends Model
     }
 
     /**
+     * Filters the post
      * @param $query
      * @param array $filters
      * @param string $sort
