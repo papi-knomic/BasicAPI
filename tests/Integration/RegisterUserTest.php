@@ -11,7 +11,7 @@ class RegisterUserTest extends TestCase
 {
     use RefreshDatabase;
 
-    private string $register = 'api/register';
+    protected $endpoint = 'api/register';
 
 
     public function test_entity_created_into_database()
@@ -19,7 +19,7 @@ class RegisterUserTest extends TestCase
         $user = User::factory()->raw();
         $user['password_confirmation'] = $user['password'];
 
-        $result = json_decode( $this->post($this->register, $user )->getContent() );
+        $result = json_decode( $this->post($this->endpoint, $user )->getContent() );
 
         $this->assertDatabaseHas('users',[ 'id' => $result->data->id ] );
     }

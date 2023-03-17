@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostLikeController;
 use App\Http\Controllers\ProfilePictureController;
 use App\Traits\Response;
 use Illuminate\Http\Request;
@@ -54,6 +55,8 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
         Route::prefix('post')->group( function () {
             //create post
             Route::post('/', [PostController::class, 'store']);
+            //like post
+            Route::post('/like',  [ PostLikeController::class, 'like' ] );
             //delete post
             Route::delete('/{post}', [PostController::class, 'destroy']);
             //update

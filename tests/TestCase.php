@@ -30,4 +30,8 @@ abstract class TestCase extends BaseTestCase
     const HTTP_METHOD_DELETE = 'DELETE';
 
     protected $endpoint = '';
+
+    protected function createUser() {
+        return User::factory()->create();
+    }
 }
