@@ -18,14 +18,13 @@ class PostFactory extends Factory
      */
     public function definition()
     {
+        $user_id = User::inRandomOrder()->first()->id;
+
         return [
             'title' => $this->faker->sentence,
             'body' => $this->faker->paragraphs(3, true),
-            'slug' => $this->faker->unique()->slug,
             'tags' => $this->faker->words(3, true),
-            'excerpt' => $this->faker->sentence,
-            'views_count' => 0,
-            'user_id' => User::factory()->create()->id
+            'user_id' => $user_id
         ];
     }
 }

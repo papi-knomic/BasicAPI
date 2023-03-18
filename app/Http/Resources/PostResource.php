@@ -26,7 +26,7 @@ class PostResource extends JsonResource
             'creator' => $this->user->username,
             'views_count' => $this->views_count,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'likes' => count( $this->likes )
         ];
     }
 }

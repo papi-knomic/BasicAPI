@@ -8,7 +8,6 @@ class PostObserver
 {
     public function creating( Post $post ) {
         $post->slug = generatePostSlug($post->title);
-        $post->user_id = auth()->id();
         $post->excerpt = generatePostExcerpt($post->body);
     }
 

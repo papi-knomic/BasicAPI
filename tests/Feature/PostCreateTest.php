@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Faker\Factory as Faker;
@@ -62,7 +63,6 @@ class PostCreateTest extends TestCase
 
     public function test_body_missing()
     {
-
         $this->be( $this->user );
         $response = $this->post($this->endpoint);
 
@@ -70,5 +70,14 @@ class PostCreateTest extends TestCase
             ->assertJsonValidationErrors('body');
     }
 
+    public function test_post_create_success()
+    {
+        $this->be( $this->user );
+        $post = Post::factory()->raw();
+        $response = $this->post($this->endpoint, $post);
+
+        $response->assertStatus(self::HTTP_CREATED )
+            ->assertJsonStructure(['data' => ['title']]);
+    }
 
 }
