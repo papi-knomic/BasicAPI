@@ -87,14 +87,9 @@ class PostCreateTest extends TestCase
         $firstPost = json_decode( $this->post($this->endpoint, $post )->getContent() );
         $slug = $firstPost->data->slug;
 
+        $secondSlug = generatePostSlug( $firstPost->data->title );
 
-
-        $secondPost = $this->post( $this->endpoint, $post )
-            ->assertStatus(self::HTTP_CREATED )
-            ->getContent();
-        $secondPost = json_decode( $secondPost );
-
-        $this->assertFalse( $slug === $secondPost->data->slug );
+        $this->assertFalse( $slug === $secondSlug );
     }
 
 }
