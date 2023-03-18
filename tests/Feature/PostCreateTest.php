@@ -80,4 +80,21 @@ class PostCreateTest extends TestCase
             ->assertJsonStructure(['data' => ['title']]);
     }
 
+    public function test_post_slug_success()
+    {
+        $this->be( $this->user );
+        $post = Post::factory()->raw();
+        $firstPost = json_decode( $this->post($this->endpoint, $post )->getContent() );
+        $slug = $firstPost->data->slug;
+
+
+
+        $secondPost = $this->post( $this->endpoint, $post )
+            ->assertStatus(self::HTTP_CREATED )
+            ->getContent();
+        $secondPost = json_decode( $secondPost );
+
+        $this->assertFalse( $slug === $secondPost->data->slug );
+    }
+
 }
