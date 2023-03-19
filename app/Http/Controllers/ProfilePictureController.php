@@ -36,7 +36,7 @@ class ProfilePictureController extends Controller
             'upload_preset' => config('cloudinary.upload_preset')
         ]);
         if ( $response->failed() ){
-            return Response::errorResponse();
+            return Response::errorResponse('Something bad happened', 400 );
         }
 
         $body = json_decode($response->body(), true);

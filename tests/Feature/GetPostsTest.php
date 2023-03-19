@@ -2,6 +2,7 @@
 
 use App\Models\Post;
 use Faker\Factory;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class GetPostsTest extends TestCase
