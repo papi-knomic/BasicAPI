@@ -122,4 +122,43 @@ class PostController extends Controller
         $posts = PostResource::collection($posts)->response()->getData(true);
         return Response::successResponseWithData($posts, 'Posts gotten');
     }
+
+    /** Like a post.
+    *
+    * @param  Post  $post
+    * @return JsonResponse
+    */
+    public function like(Post $post): JsonResponse
+    {
+        $userId = auth()->user()->id;
+        $user = User::find($userId);
+
+        if ($user->hasLiked($post)) {
+            return Response::errorResponse( 'You have already liked this post', 409 );
+        }
+
+        $user->like($post);
+
+        return Response::successResponse('Post liked successfully', 200);
+    }
+
+    /**
+     * Dislike a post.
+     *
+     * @param  Post  $post
+     * @return JsonResponse
+     */
+    public function dislike(Post $post): JsonResponse
+    {
+        $userId = auth()->user()->id;
+        $user = User::find($userId);
+
+        if ($user->hasDisliked($post)) {
+            return Response::errorResponse( 'You have already disliked this post', 409 );
+        }
+
+        $user->dislike($post);
+
+        return Response::successResponse('Post disliked successfully', 200);
+    }
 }

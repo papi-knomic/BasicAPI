@@ -25,8 +25,34 @@ class PostResource extends JsonResource
             'slug' => $this->slug,
             'creator' => $this->user->username,
             'views_count' => $this->views_count,
+            'likes_count' => count($this->likes),
+            'dislikes_count' => count($this->dislikes),
+            'liked_by_user' => $this->likedByUser($request->user()),
+            'disliked_by_user' => $this->dislikedByUser($request->user()),
             'created_at' => $this->created_at,
             'likes' => count( $this->likes )
         ];
+    }
+
+    private function likedByUser($user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        return $this->likes->contains(function ($item) use ($user) {
+            return $item->id === $user->id;
+        });
+    }
+
+    private function dislikedByUser($user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        return $this->dislikes->contains(function ($item) use ($user) {
+            return $item->id === $user->id;
+        });
     }
 }

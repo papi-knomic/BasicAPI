@@ -91,7 +91,7 @@ class ProfilePictureTest extends TestCase
         ]);
 
         // Assert that the response is successful and has the expected data
-        $response->assertStatus(201);
+        $response->assertStatus(self::HTTP_CREATED );
         $response->assertJson([
             'data' => [
                 'public_id' => $uuid,

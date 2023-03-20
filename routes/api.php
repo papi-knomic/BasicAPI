@@ -27,6 +27,8 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
     Route::post('/register', [AuthController::class, 'register']);
     //login
     Route::post('/login', [AuthController::class, 'login']);
+    //logout
+    Route::post('/logout', [AuthController::class, 'logout']);
 
     //view profile
     Route::get('/profile/{user}', [AuthController::class, 'viewProfile']);
@@ -56,16 +58,15 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
             //create post
             Route::post('/', [PostController::class, 'store']);
             //like post
-            Route::post('/like',  [ PostLikeController::class, 'like' ] );
+            Route::post('{post}/like', [PostController::class, 'like'])->name('posts.like');
+            //dislike
+            Route::post('{post}/dislike', [PostController::class, 'dislike'])->name('posts.dislike');
             //delete post
             Route::delete('/{post}', [PostController::class, 'destroy']);
             //update
             Route::put('/{post}', [PostController::class, 'update']);
         });
     });
-
-    //logout
-    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 

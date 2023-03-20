@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model
 {
@@ -15,10 +16,6 @@ class Post extends Model
     public function user() : BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
-    }
-
-    public function likes() {
-        return $this->hasMany( PostLike::class );
     }
 
     /**
@@ -49,5 +46,22 @@ class Post extends Model
         } );
 
     }
+
+    /**
+     * Get the users that have liked the post.
+     */
+    public function likes() : BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->withPivot('liked')->wherePivot('liked', true);
+    }
+
+    /**
+     * Get the users that have disliked the post.
+     */
+    public function dislikes() : BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->withPivot('disliked')->wherePivot('disliked', true);
+    }
+
 
 }
