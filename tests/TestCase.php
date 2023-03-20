@@ -14,10 +14,12 @@ abstract class TestCase extends BaseTestCase
     const HTTP_OK = 200;
     const HTTP_CREATED = 201;
     const HTTP_NO_CONTENT = 204;
+    const HTTP_REDIRECT = 302;
     const HTTP_NOT_FOUND = 404;
     const HTTP_UNAUTHOURIZED = 401;
     const HTTP_WRONG_METHOD = 405;
     const HTTP_FORBIDDEN = 403;
+    const HTTP_CONFLICT = 409;
     const HTTP_UNPROCESSABLE_ENTITY = 422;
     const HTTP_INTERNAL_ERROR = 500;
     const HTTP_SERVICE_UNAVAILABLE = 503;

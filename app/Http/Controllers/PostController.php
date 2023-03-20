@@ -139,7 +139,7 @@ class PostController extends Controller
 
         $user->like($post);
 
-        return Response::successResponse('Post liked successfully', 200);
+        return Response::successResponse('Post liked successfully' );
     }
 
     /**

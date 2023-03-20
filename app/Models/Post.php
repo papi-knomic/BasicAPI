@@ -63,5 +63,9 @@ class Post extends Model
         return $this->belongsToMany(User::class)->withPivot('disliked')->wherePivot('disliked', true);
     }
 
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where('slug', $value)->orWhere('id', $value)->firstOrFail();
+    }
 
 }
