@@ -42,6 +42,22 @@ class GetPostsTest extends TestCase
             ]);
     }
 
+    public function test_it_returns_a_success_response_with_wrong_sort_filter()
+    {
+        Post::factory()->count(5)->create();
+
+
+        // When
+        $response = $this->get($this->endpoint.'?sort_by=fake');
+
+        // Then
+        $response->assertStatus(self::HTTP_OK)
+            ->assertJson([
+                'success' => true,
+                'message' => 'Posts gotten',
+            ]);
+    }
+
     public function test_it_returns_a_success_response_with_post_data_for_latest_filter()
     {
         Post::factory()->count(5)->create();
@@ -126,6 +142,23 @@ class GetPostsTest extends TestCase
 
         $this->get("api/$id/posts" )
             ->assertStatus(self::HTTP_OK)
+            ->assertJson([
+                'success' => true,
+                'message' => 'Posts gotten',
+            ]);
+    }
+
+    public function test_wrong_sort_filter_passed_to_get_user_posts()
+    {
+        $post = Post::factory()->raw();
+        $this->user->posts()->create($post);
+        $id = $this->user->id;
+
+        // When
+        $response = $this->get(  "api/$id/posts?sort_by=fake");
+
+        // Then
+        $response->assertStatus(self::HTTP_OK)
             ->assertJson([
                 'success' => true,
                 'message' => 'Posts gotten',

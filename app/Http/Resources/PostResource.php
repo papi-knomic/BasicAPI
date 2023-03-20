@@ -30,7 +30,7 @@ class PostResource extends JsonResource
             'liked_by_user' => $this->likedByUser($request->user()),
             'disliked_by_user' => $this->dislikedByUser($request->user()),
             'created_at' => $this->created_at,
-            'likes' => count( $this->likes )
+            'updated_at' => $this->updated_at
         ];
     }
 
