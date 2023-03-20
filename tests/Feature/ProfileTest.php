@@ -27,7 +27,7 @@ class ProfileTest extends TestCase
     public function test_profile_update_endpoint()
     {
         $response = $this->post($this->endpoint);
-        $response->assertStatus(self::HTTP_INTERNAL_ERROR );
+        $response->assertStatus(self::HTTP_REDIRECT );
     }
 
     /**
@@ -38,7 +38,7 @@ class ProfileTest extends TestCase
     public function test_get_profile_endpoint()
     {
         $response = $this->get($this->endpoint);
-        $response->assertStatus(self::HTTP_INTERNAL_ERROR );
+        $response->assertStatus(self::HTTP_REDIRECT );
     }
 
     public function test_profile_update_success()

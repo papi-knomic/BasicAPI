@@ -40,7 +40,7 @@ class ViewProfileTest extends TestCase
     public function test_user_id_not_in_db()
     {
 
-        $id = $this->user->id + 10;
+        $id = 100000;
         $this->get($this->endpoint . "/$id")
             ->assertStatus(self::HTTP_NOT_FOUND );
     }
