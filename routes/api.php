@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfilePictureController;
 use App\Traits\Response;
@@ -63,6 +64,8 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
             Route::post('{post}/dislike', [PostController::class, 'dislike'])->name('post.dislike');
             //delete post
             Route::delete('/{post}', [PostController::class, 'destroy'])->name('post.destroy');
+            //Add comment
+            Route::post('/{post}/comment', [ CommentController::class, 'store' ])->name('comments.store');
         });
     });
 });

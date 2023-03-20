@@ -9,8 +9,9 @@ use Tests\TestCase;
 
 class DislikePostTest extends TestCase
 {
-    protected $user;
+    use RefreshDatabase;
 
+    protected $user;
 
     protected function setUp(): void
     {

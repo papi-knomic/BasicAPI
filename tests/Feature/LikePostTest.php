@@ -9,6 +9,8 @@ use Tests\TestCase;
 
 class LikePostTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected $user;
 
 
