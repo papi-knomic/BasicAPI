@@ -2,10 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\PostLikeController;
 use App\Http\Controllers\ProfilePictureController;
 use App\Traits\Response;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,11 +22,9 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
     });
 
     //register
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
     //login
-    Route::post('/login', [AuthController::class, 'login']);
-    //logout
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
 
     //view profile
     Route::get('/profile/{user}', [AuthController::class, 'viewProfile']);
@@ -36,35 +32,37 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
     Route::get('/{user}/posts' , [PostController::class, 'getUserPosts']);
 
     //get all posts
-    Route::get('/posts', [PostController::class, 'index']);
+    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
     //get single post
-    Route::get('/post/{post}', [PostController::class, 'show']);
+    Route::get('/post/{post}', [PostController::class, 'show'])->name('posts.show');
 
 
     //protected routes
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::prefix('account')->group(function () {
             //view your profile
-            Route::get('/profile', [AuthController::class, 'profile']);
+            Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
             //update
-            Route::post('/profile', [AuthController::class, 'update']);
+            Route::post('/profile', [AuthController::class, 'update'])->name('profile.update');
             //get profile picture
             Route::get('/profile-picture', [ ProfilePictureController::class, 'show']);
             //post profile picture
             Route::post('/profile-picture', [ ProfilePictureController::class, 'store']);
+            //logout
+            Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         });
 
         Route::prefix('post')->group( function () {
             //create post
-            Route::post('/', [PostController::class, 'store']);
-            //like post
-            Route::post('{post}/like', [PostController::class, 'like'])->name('posts.like');
-            //dislike
-            Route::post('{post}/dislike', [PostController::class, 'dislike'])->name('posts.dislike');
-            //delete post
-            Route::delete('/{post}', [PostController::class, 'destroy']);
+            Route::post('/', [PostController::class, 'store'])->name('post.store');
             //update
-            Route::put('/{post}', [PostController::class, 'update']);
+            Route::post('/{post}', [PostController::class, 'update'])->name('post.update');
+            //like post
+            Route::post('{post}/like', [PostController::class, 'like'])->name('post.like');
+            //dislike
+            Route::post('{post}/dislike', [PostController::class, 'dislike'])->name('post.dislike');
+            //delete post
+            Route::delete('/{post}', [PostController::class, 'destroy'])->name('post.destroy');
         });
     });
 });
