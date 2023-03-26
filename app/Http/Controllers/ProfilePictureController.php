@@ -59,8 +59,12 @@ class ProfilePictureController extends Controller
      */
     public function show(Request $request): JsonResponse
     {
-        $profilePictureResource = ProfilePicture::where('user_id', auth()->id() )->first()->pluck('url');
+        if ( ! ProfilePicture::where('user_id', auth()->id() )->exists() ) {
+            return Response::errorResponse('No profile picture found', 404);
+        }
+        $profilePicture = ProfilePicture::where('user_id', auth()->id() )->first();
+        $url = $profilePicture->url;
 
-        return Response::successResponseWithData($profilePictureResource);
+        return Response::successResponseWithData($url);
     }
 }

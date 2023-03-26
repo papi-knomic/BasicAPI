@@ -1,7 +1,7 @@
 # REST API Starter
 
 This is a starter code for building RESTFUL APIs using Laravel, a powerful PHP web application framework. This codebase is designed to provide developers with a quick and easy way to get started building APIs, with pre-configured packages and a basic structure for API development. It can also be used for beginners on the frontend side who need a rest API to consume. It also uses Cloudinary for image upload.
-It also has a CRUD for post
+It also has a CRUD for post. Code coverage for my tests cover about 80-90% of my code
 
 ## Endpoints
 

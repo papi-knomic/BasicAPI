@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Jobs\ProfilePictureJob;
+use App\Models\ProfilePicture;
 use Faker\Factory;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
@@ -121,6 +122,33 @@ class ProfilePictureTest extends TestCase
             'success' => false,
             'message' => 'Something bad happened'
         ]);
+    }
+
+    public function test_get_user_profile_picture_does_not_exist()
+    {
+        $this->be( $this->user );
+
+        $response = $this->get( $this->endpoint );
+
+        $response->assertStatus(self::HTTP_NOT_FOUND);
+    }
+
+
+    public function test_get_user_profile_picture_success()
+    {
+        // Given we have an authenticated user
+        $user = $this->user;
+        $this->be($user);
+
+        // And the user has a profile picture
+        $profilePicture = ProfilePicture::factory()->create(['user_id' => $user->id]);
+
+        // When we make a GET request to the show method
+        $response = $this->get($this->endpoint);
+
+        // Then we should receive a JSON response with the profile picture URL
+        $response->assertStatus(self::HTTP_OK)
+            ->assertJson(['success' => true, 'data' => $profilePicture->url]);
     }
 
 }
