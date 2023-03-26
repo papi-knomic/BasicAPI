@@ -68,4 +68,9 @@ class Post extends Model
         return $this->where('slug', $value)->orWhere('id', $value)->firstOrFail();
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->orderBy('created_at', 'desc')->whereNull('parent_id');
+    }
+
 }

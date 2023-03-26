@@ -82,4 +82,51 @@ class AddCommentTest extends TestCase
         $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors('parent_id');
     }
+
+    public function test_comment_added_success()
+    {
+        $this->be( $this->user );
+
+        $post = Post::factory()->create();
+        $body = Factory::create()->sentence();
+
+        $response = $this->post(route('comments.store', ['post' => $post->id]), [
+            'body' => $body,
+        ]);
+
+        $response->assertStatus(self::HTTP_OK);
+    }
+
+    public function test_comment_added_to_parent_success()
+    {
+        $this->be( $this->user );
+
+        $post = Post::factory()->create();
+        $parentComment = Comment::factory()->create();
+        $comment = Comment::factory()->raw();
+        $comment['parent_id'] = $parentComment->id;
+
+
+        $response = $this->post(route('comments.store', ['post' => $post->id]), $comment);
+
+        $response->assertStatus(self::HTTP_OK);
+    }
+
+    public function test_comment_added_to_child_error()
+    {
+        $this->be( $this->user );
+
+        $post = Post::factory()->create();
+        $parentComment = Comment::factory()->create();
+        $comment = Comment::factory()->raw();
+        $comment['parent_id'] = $parentComment->id;
+        $childComment = Comment::create($comment);
+        $newComment = Comment::factory()->raw();
+        $newComment['parent_id'] = $childComment->id;
+
+
+        $response = $this->post(route('comments.store', ['post' => $post->id]), $newComment);
+
+        $response->assertStatus(self::HTTP_BAD_REQUEST );
+    }
 }

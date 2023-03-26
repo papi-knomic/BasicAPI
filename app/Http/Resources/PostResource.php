@@ -29,6 +29,7 @@ class PostResource extends JsonResource
             'dislikes_count' => count($this->dislikes),
             'liked_by_user' => $this->likedByUser($request->user()),
             'disliked_by_user' => $this->dislikedByUser($request->user()),
+            'comments' => CommentResource::collection( $this->comments ),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
