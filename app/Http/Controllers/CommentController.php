@@ -41,6 +41,10 @@ class CommentController extends Controller
             if ( $parentComment->parent_id  ) {
                 return Response::errorResponse('You can not add comment to this thread', 400 );
             }
+
+            if ( $parentComment->post_id !== $post->id ) {
+                return Response::errorResponse('Wrong post passed', 400 );
+            }
         }
         Comment::create($commentData);
 

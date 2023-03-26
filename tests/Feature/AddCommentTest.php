@@ -29,7 +29,7 @@ class AddCommentTest extends TestCase
     public function test_endpoint()
     {
         $post = Post::factory()->create();
-        $response = $this->post( route('comments.store', ['post' => $post->id]) );
+        $response = $this->post( route('comment.store', ['post' => $post->id]) );
 
         $response->assertStatus(self::HTTP_REDIRECT );
     }
@@ -39,7 +39,7 @@ class AddCommentTest extends TestCase
     {
         $this->be( $this->user );
 
-        $response = $this->post(route('comments.store', ['post'=> '10000' ]));
+        $response = $this->post(route('comment.store', ['post'=> '10000' ]));
 
         $response->assertStatus(self::HTTP_NOT_FOUND );
     }
@@ -49,7 +49,7 @@ class AddCommentTest extends TestCase
         $this->be( $this->user );
 
         $post = Post::factory()->create();
-        $response = $this->post(route('comments.store', ['post' => $post->id]));
+        $response = $this->post(route('comment.store', ['post' => $post->id]));
 
         $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors('body');
@@ -61,7 +61,7 @@ class AddCommentTest extends TestCase
 
         $post = Post::factory()->create();
         $body = Factory::create()->text(5);
-        $response = $this->post(route('comments.store', ['post' => $post->id]), ['body' => $body]);
+        $response = $this->post(route('comment.store', ['post' => $post->id]), ['body' => $body]);
 
         $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors('body');
@@ -74,7 +74,7 @@ class AddCommentTest extends TestCase
         $post = Post::factory()->create();
         $body = Factory::create()->sentence();
 
-        $response = $this->post(route('comments.store', ['post' => $post->id]), [
+        $response = $this->post(route('comment.store', ['post' => $post->id]), [
             'body' => $body,
             'parent_id' => 1000
         ]);
@@ -90,7 +90,7 @@ class AddCommentTest extends TestCase
         $post = Post::factory()->create();
         $body = Factory::create()->sentence();
 
-        $response = $this->post(route('comments.store', ['post' => $post->id]), [
+        $response = $this->post(route('comment.store', ['post' => $post->id]), [
             'body' => $body,
         ]);
 
@@ -107,7 +107,7 @@ class AddCommentTest extends TestCase
         $comment['parent_id'] = $parentComment->id;
 
 
-        $response = $this->post(route('comments.store', ['post' => $post->id]), $comment);
+        $response = $this->post(route('comment.store', ['post' => $post->id]), $comment);
 
         $response->assertStatus(self::HTTP_OK);
     }
@@ -125,8 +125,26 @@ class AddCommentTest extends TestCase
         $newComment['parent_id'] = $childComment->id;
 
 
-        $response = $this->post(route('comments.store', ['post' => $post->id]), $newComment);
+        $response = $this->post(route('comment.store', ['post' => $post->id]), $newComment);
 
         $response->assertStatus(self::HTTP_BAD_REQUEST );
+    }
+
+
+    public function test_comment_added_to_parent_with_different_post_id()
+    {
+        // create an authenticated user
+        $this->be($this->user);
+
+        // create a post and a parent comment
+        $post = Post::factory()->create();
+        $parentComment = Comment::factory()->create(['post_id' => $post->id]);
+
+        // attempt to create a child comment with a different post ID
+        $childComment = Comment::factory()->raw(['parent_id' => $parentComment->id]);
+        $response = $this->post(route('comment.store', ['post' => Post::factory()->create()->id]), $childComment);
+
+        // assert that the response status code is HTTP_UNPROCESSABLE_ENTITY
+        $response->assertStatus( self::HTTP_BAD_REQUEST);
     }
 }
