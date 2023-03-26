@@ -4,23 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\PostResource;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Traits\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function index()
+    public function index( Post $post ): JsonResponse
     {
-        //
+        $comments = $post->comments;
+        $comments = CommentResource::collection($comments);
+
+        return Response::successResponseWithData( $comments );
     }
 
 
@@ -58,11 +61,12 @@ class CommentController extends Controller
      * Display the specified resource.
      *
      * @param Comment $comment
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function show(Comment $comment)
+    public function show(Comment $comment): JsonResponse
     {
-        //
+        $comment = new CommentResource($comment);
+        return Response::successResponseWithData($comment);
     }
 
 
@@ -99,6 +103,6 @@ class CommentController extends Controller
 
         $comment->delete();
 
-        return Response::successResponse('Comment deleted successfully', 204);
+        return Response::successResponse('Comment deleted successfully', );
     }
 }

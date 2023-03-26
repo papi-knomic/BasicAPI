@@ -64,13 +64,15 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
             Route::post('{post}/dislike', [PostController::class, 'dislike'])->name('post.dislike');
             //delete post
             Route::delete('/{post}', [PostController::class, 'destroy'])->name('post.destroy');
+            //Get comments
+            Route::get('/{post}/comments', [ CommentController::class, 'index' ])->name('comment.index');
             //Add comment
             Route::post('/{post}/comment', [ CommentController::class, 'store' ])->name('comment.store');
         });
 
         Route::prefix('comment')->group( function () {
             //get comment
-//            Route::get('/{comment}', [CommentController::class, 'show'])->name('comment.show');
+            Route::get('/{comment}', [CommentController::class, 'show'])->name('comment.show');
             //update comment
             Route::patch('/{comment}', [ CommentController::class, 'update' ])->name('comment.update');
             //delete comment

@@ -48,6 +48,6 @@ class DeleteCommentTest extends TestCase
         $comment = Comment::factory()->create(['user_id' => $this->user->id]);
         $response = $this->delete(route('comment.destroy', ['comment' => $comment]));
 
-        $response->assertStatus(self::HTTP_NO_CONTENT);
+        $response->assertStatus(self::HTTP_OK);
     }
 }
