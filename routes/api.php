@@ -74,7 +74,7 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
             //update comment
             Route::patch('/{comment}', [ CommentController::class, 'update' ])->name('comment.update');
             //delete comment
-//            Route::delete('/{comment}', [ CommentController::class, 'destroy' ])->name('comment.destroy');
+            Route::delete('/{comment}', [ CommentController::class, 'destroy' ])->name('comment.destroy');
         });
     });
 });

@@ -89,10 +89,16 @@ class CommentController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Comment $comment
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function destroy(Comment $comment)
+    public function destroy(Comment $comment): JsonResponse
     {
-        //
+        if ( !checkCommentCreator($comment) ){
+            return Response::errorResponse('You are not authorised to do this');
+        }
+
+        $comment->delete();
+
+        return Response::successResponse('Comment deleted successfully', 204);
     }
 }
