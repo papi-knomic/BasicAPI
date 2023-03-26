@@ -164,4 +164,18 @@ class GetPostsTest extends TestCase
                 'message' => 'Posts gotten',
             ]);
     }
+
+    public function test_get_single_post()
+    {
+        $post = Post::factory()->create();
+        // When
+        $response = $this->get(  "api/post/$post->id");
+
+        // Then
+        $response->assertStatus(self::HTTP_OK)
+            ->assertJson([
+                'success' => true,
+                'message' => 'success',
+            ]);
+    }
 }
