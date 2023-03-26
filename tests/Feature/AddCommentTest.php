@@ -94,7 +94,7 @@ class AddCommentTest extends TestCase
             'body' => $body,
         ]);
 
-        $response->assertStatus(self::HTTP_OK);
+        $response->assertStatus(self::HTTP_CREATED);
     }
 
     public function test_comment_added_to_parent_success()
@@ -108,7 +108,7 @@ class AddCommentTest extends TestCase
 
         $response = $this->post(route('comment.store', ['post' => $post->id]), $comment);
 
-        $response->assertStatus(self::HTTP_OK);
+        $response->assertStatus(self::HTTP_CREATED);
     }
 
     public function test_comment_added_to_child_error()

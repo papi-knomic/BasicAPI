@@ -51,13 +51,13 @@ class CommentController extends Controller
 
         $postResource = new PostResource($post);
 
-        return Response::successResponseWithData( $postResource);
+        return Response::successResponseWithData( $postResource, 'Comment added sucessfully', 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Comment  $comment
+     * @param Comment $comment
      * @return \Illuminate\Http\Response
      */
     public function show(Comment $comment)
@@ -69,19 +69,26 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param  \App\Models\Comment  $comment
-     * @return \Illuminate\Http\Response
+     * @param UpdateCommentRequest $request
+     * @param Comment $comment
+     * @return JsonResponse
      */
-    public function update(UpdateCommentRequest $request, Comment $comment)
+    public function update(UpdateCommentRequest $request, Comment $comment) : JsonResponse
     {
-        //
+        if ( !checkCommentCreator($comment) ){
+            return Response::errorResponse('You are not authorised to do this');
+        }
+        $fields = $request->validated();
+        $comment->update($fields);
+        $postResource = new PostResource($comment->post);
+
+        return Response::successResponseWithData($postResource);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Comment  $comment
+     * @param Comment $comment
      * @return \Illuminate\Http\Response
      */
     public function destroy(Comment $comment)

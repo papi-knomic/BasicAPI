@@ -70,11 +70,11 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
 
         Route::prefix('comment')->group( function () {
             //get comment
-            Route::get('/{comment}', [CommentController::class, 'show'])->name('comment.show');
+//            Route::get('/{comment}', [CommentController::class, 'show'])->name('comment.show');
             //update comment
-            Route::patch('/comment/{comment}', [ CommentController::class, 'update' ])->name('comment.update');
+            Route::patch('/{comment}', [ CommentController::class, 'update' ])->name('comment.update');
             //delete comment
-            Route::delete('/comment/{comment}', [ CommentController::class, 'destroy' ])->name('comment.destroy');
+//            Route::delete('/{comment}', [ CommentController::class, 'destroy' ])->name('comment.destroy');
         });
     });
 });
