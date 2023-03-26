@@ -102,10 +102,9 @@ class AddCommentTest extends TestCase
         $this->be( $this->user );
 
         $post = Post::factory()->create();
-        $parentComment = Comment::factory()->create();
-        $comment = Comment::factory()->raw();
+        $parentComment = Comment::factory()->create(['post_id'=>$post->id]);
+        $comment = Comment::factory()->raw(['post_id' => $post->id]);
         $comment['parent_id'] = $parentComment->id;
-
 
         $response = $this->post(route('comment.store', ['post' => $post->id]), $comment);
 

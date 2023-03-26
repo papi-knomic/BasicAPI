@@ -28,7 +28,7 @@ class AddCommentTest extends TestCase
         $post = Post::factory()->create();
         $body = Factory::create()->text();
 
-        $result = json_decode( $this->post(route('comments.store', ['post' => $post->id]), [
+        $result = json_decode( $this->post(route('comment.store', ['post' => $post->id]), [
             'body' => $body,
         ])->getContent() );
 

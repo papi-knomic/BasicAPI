@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddCommentRequest;
+use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Comment;
 use App\Models\Post;
@@ -72,7 +73,7 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Comment $comment)
+    public function update(UpdateCommentRequest $request, Comment $comment)
     {
         //
     }
