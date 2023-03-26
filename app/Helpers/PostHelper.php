@@ -24,8 +24,8 @@ if ( ! function_exists('generatePostExcerpt') ) {
     }
 }
 
-if ( ! function_exists( 'checkPostCreator') ) {
-    function checkPostCreator( Post $post ): bool {
+if ( ! function_exists( 'isPostCreator') ) {
+    function isPostCreator( Post $post ): bool {
         return auth()->id() == $post->user_id;
      }
 }

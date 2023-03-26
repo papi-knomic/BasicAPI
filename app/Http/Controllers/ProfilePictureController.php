@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UploadProfilePictureRequest;
 use App\Jobs\ProfilePictureJob;
 use App\Models\ProfilePicture;
+use App\Models\User;
 use App\Traits\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -59,10 +60,11 @@ class ProfilePictureController extends Controller
      */
     public function show(Request $request): JsonResponse
     {
-        if ( ! ProfilePicture::where('user_id', auth()->id() )->exists() ) {
+        $user = auth()->user();
+        if ( ! $user->profilePicture ) {
             return Response::errorResponse('No profile picture found', 404);
         }
-        $profilePicture = ProfilePicture::where('user_id', auth()->id() )->first();
+        $profilePicture = $user->profilePicture;
         $url = $profilePicture->url;
 
         return Response::successResponseWithData($url);

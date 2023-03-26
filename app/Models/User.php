@@ -42,12 +42,12 @@ class User extends Authenticatable
 
     public function profilePicture() : HasOne
     {
-        return $this->hasOne( ProfilePicture::class, 'id', 'profile_picture');
+        return $this->hasOne( ProfilePicture::class );
     }
 
     public function posts() : HasMany
     {
-        return $this->hasMany( Post::class, 'user_id', 'id');
+        return $this->hasMany( Post::class, );
     }
 
     public function resolveRouteBinding($value, $field = null)

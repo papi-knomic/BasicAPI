@@ -82,7 +82,7 @@ class PostController extends Controller
      */
     public function update(CreatePostRequest $request, Post $post) : JsonResponse
     {
-        if ( !checkPostCreator($post) ){
+        if ( !isPostCreator($post) ){
             return Response::errorResponse('You are not authorised to do this');
         }
         $fields = $request->validated();
@@ -99,7 +99,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        if ( !checkPostCreator($post) ){
+        if ( !isPostCreator($post) ){
             return Response::errorResponse('You are not authorised to do this');
         }
 

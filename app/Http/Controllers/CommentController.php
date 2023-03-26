@@ -40,15 +40,14 @@ class CommentController extends Controller
         $commentData['post_id'] = $post->id;
         $commentData['user_id'] = auth()->id();
 
-        if ( array_key_exists('parent_id', $commentData) ) {
-            $parentComment = Comment::find($commentData['parent_id']);
-            if ( $parentComment->parent_id  ) {
+        $parentId = $request->parent_id;
+        if ( $parentId ) {
+            $parentComment =  Comment::whereId($parentId)->whereNull('parent_id')->first();
+            if (!$parentComment) {
                 return Response::errorResponse('You can not add comment to this thread', 400 );
             }
 
-            if ( $parentComment->post_id !== $post->id ) {
-                return Response::errorResponse('Wrong post passed', 400 );
-            }
+            $commentData['post_id'] = $parentComment->post_id;
         }
         Comment::create($commentData);
 
@@ -79,7 +78,7 @@ class CommentController extends Controller
      */
     public function update(UpdateCommentRequest $request, Comment $comment) : JsonResponse
     {
-        if ( !checkCommentCreator($comment) ){
+        if ( !isCommentCreator($comment) ){
             return Response::errorResponse('You are not authorised to do this');
         }
         $fields = $request->validated();
@@ -97,7 +96,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment): JsonResponse
     {
-        if ( !checkCommentCreator($comment) ){
+        if ( !isCommentCreator($comment) ){
             return Response::errorResponse('You are not authorised to do this');
         }
 

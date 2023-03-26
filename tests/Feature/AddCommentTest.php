@@ -128,22 +128,4 @@ class AddCommentTest extends TestCase
 
         $response->assertStatus(self::HTTP_BAD_REQUEST );
     }
-
-
-    public function test_comment_added_to_parent_with_different_post_id()
-    {
-        // create an authenticated user
-        $this->be($this->user);
-
-        // create a post and a parent comment
-        $post = Post::factory()->create();
-        $parentComment = Comment::factory()->create(['post_id' => $post->id]);
-
-        // attempt to create a child comment with a different post ID
-        $childComment = Comment::factory()->raw(['parent_id' => $parentComment->id]);
-        $response = $this->post(route('comment.store', ['post' => Post::factory()->create()->id]), $childComment);
-
-        // assert that the response status code is HTTP_UNPROCESSABLE_ENTITY
-        $response->assertStatus( self::HTTP_BAD_REQUEST);
-    }
 }
