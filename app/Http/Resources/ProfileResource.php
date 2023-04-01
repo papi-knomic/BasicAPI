@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,6 +23,26 @@ class ProfileResource extends JsonResource
             "username" => $this->username,
             "profile_picture" => $this->profilePicture->url ?? null,
             "bio" => $this->bio,
-            ];
+            "following" => $this->followsUser(),
+            "follows_you" => $this->userFollows()
+        ];
+    }
+
+    private function followsUser() : bool
+    {
+        if ( !auth()->id() || $this->id === auth()->id() ) {
+            return false;
+        }
+
+        return $this->isFollowedByUser( auth()->id());
+    }
+
+    private function userFollows() : bool
+    {
+        if ( !auth()->id() ) {
+            return false;
+        }
+
+        return auth()->user()->isFollowedByUser( $this->id );
     }
 }

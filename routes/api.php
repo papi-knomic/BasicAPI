@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfilePictureController;
 use App\Traits\Response;
@@ -41,6 +42,10 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
     //protected routes
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::prefix('account')->group(function () {
+            //get user followers
+            Route::get('/followers', [FollowerController::class, 'getFollowers'])->name('profile.followers');
+            //get user followings
+            Route::get('/following', [FollowerController::class, 'getFollowing'])->name('profile.following');
             //view your profile
             Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
             //update
@@ -53,7 +58,18 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
             Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         });
 
-        Route::prefix('post')->group( function () {
+        Route::prefix('user')->group(function () {
+            //get user followers
+            Route::get('/{user}/followers', [FollowerController::class, 'followers'])->name('user.followers');
+            //get user followings
+            Route::get('/{user}/following', [FollowerController::class, 'following'])->name('user.following');
+           //follow user
+            Route::post('/{user}/follow', [FollowerController::class, 'follow'])->name('user.follow');
+            //follow user
+            Route::post('/{user}/unfollow', [FollowerController::class, 'unfollow'])->name('user.unfollow');
+        });
+
+        Route::prefix('post')->group(function () {
             //create post
             Route::post('/', [PostController::class, 'store'])->name('post.store');
             //update
@@ -70,7 +86,7 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
             Route::post('/{post}/comment', [ CommentController::class, 'store' ])->name('comment.store');
         });
 
-        Route::prefix('comment')->group( function () {
+        Route::prefix('comment')->group(function () {
             //get comment
             Route::get('/{comment}', [CommentController::class, 'show'])->name('comment.show');
             //update comment

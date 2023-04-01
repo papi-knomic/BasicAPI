@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -50,7 +52,7 @@ class User extends Authenticatable
         return $this->hasMany( Post::class, );
     }
 
-    public function resolveRouteBinding($value, $field = null)
+    public function resolveRouteBinding($value, $field = null): ?Model
     {
         return $this->where('username', $value)->orWhere('id', $value)->firstOrFail();
     }
@@ -63,7 +65,7 @@ class User extends Authenticatable
     /**
      * The posts that the user dislikes.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function dislikes()
     {
@@ -76,7 +78,7 @@ class User extends Authenticatable
      * @param  Post  $post
      * @return bool
      */
-    public function hasLiked(Post $post)
+    public function hasLiked(Post $post): bool
     {
         return $this->likes()->where('post_id', $post->id)->exists();
     }
@@ -87,7 +89,7 @@ class User extends Authenticatable
      * @param  Post  $post
      * @return bool
      */
-    public function hasDisliked(Post $post)
+    public function hasDisliked(Post $post): bool
     {
         return $this->dislikes()->where('post_id', $post->id)->exists();
     }
@@ -141,6 +143,46 @@ class User extends Authenticatable
     public function removeDislike(Post $post)
     {
         $this->dislikes()->detach($post);
+    }
+
+    /**
+     * Get the users who follow this user.
+     */
+    public function followers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'followers', 'following_id', 'follower_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the users this user is following.
+     */
+    public function following(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if the authenticated user is following the specified user.
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function isFollowedByUser(int $userId) : bool
+    {
+        return $this->followers()->wherePivot('follower_id', $userId)->exists();
+    }
+
+    /**
+     * Check if the authenticated user is following the specified user.
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function isFollowingUser(int $userId) : bool
+    {
+        return $this->following()->wherePivot('following_id', $userId)->exists();
     }
 
 }
