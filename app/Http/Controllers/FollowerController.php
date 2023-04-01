@@ -13,7 +13,7 @@ class FollowerController extends Controller
 
 
     /**
-     * Remove the specified resource from storage.
+     * Get specific user followers.
      *
      * @param User $user
      * @return JsonResponse
@@ -27,7 +27,7 @@ class FollowerController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Get specific user following
      *
      * @param User $user
      * @return JsonResponse
@@ -41,7 +41,7 @@ class FollowerController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Follow specific user.
      *
      * @param User $user
      * @return JsonResponse
@@ -62,7 +62,7 @@ class FollowerController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Unfollow specific user.
      *
      * @param User $user
      * @return JsonResponse
@@ -82,6 +82,10 @@ class FollowerController extends Controller
         return Response::successResponse('You have successfully followed the user', 201);
     }
 
+    /**
+     * Get authenticated user followers.
+     * @return JsonResponse
+     */
     public function getFollowers() : JsonResponse
     {
         $user = auth()->id();
@@ -92,7 +96,10 @@ class FollowerController extends Controller
         return Response::successResponseWithData( $followers );
     }
 
-
+    /**
+     * Get authenticated user following.
+     * @return JsonResponse
+     */
     public function getFollowing() : JsonResponse
     {
         $user = auth()->user();
@@ -102,6 +109,4 @@ class FollowerController extends Controller
 
         return Response::successResponseWithData( $following );
     }
-
-
 }
