@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Repositories\PostRepository;
 use App\Traits\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
@@ -161,4 +160,29 @@ class PostController extends Controller
 
         return Response::successResponse('Post disliked successfully', 200);
     }
+
+    /** Get posts for users from other users they follow
+     * @return void
+     */
+    public function following() : JsonResponse
+    {
+        $user = auth()->user();
+
+        $following = $user->following()->pluck('following_id');
+
+        $posts = Post::whereIn('user_id', $following)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        $posts = PostResource::collection($posts)->response()->getData(true);
+        return Response::successResponseWithData($posts, 'Posts gotten');
+    }
+
+    public function recommended()
+    {
+        //TODO decide what way to recommend posts for user
+
+    }
+
+
 }

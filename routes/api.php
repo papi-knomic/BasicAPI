@@ -69,6 +69,10 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
             Route::post('/{user}/unfollow', [FollowerController::class, 'unfollow'])->name('user.unfollow');
         });
 
+        Route::get('posts/following', [PostController::class, 'following'])->name('posts.following');
+
+        Route::get('posts/following', [PostController::class, 'recommended'])->name('posts.recommended');
+
         Route::prefix('post')->group(function () {
             //create post
             Route::post('/', [PostController::class, 'store'])->name('post.store');
