@@ -172,8 +172,6 @@ class PostController extends Controller
         $sort = request('sort_by', 'latest');
 
         $filters = [
-            'tag' => request('tag'),
-            'search' => request('search'),
             'sort' => $sort
         ];
 

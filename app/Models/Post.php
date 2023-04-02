@@ -27,7 +27,6 @@ class Post extends Model
      */
     public function scopeFilter($query, array $filters, string $sort = 'latest' )
     {
-
         $query->when( $sort === 'popular', function ($query) {
             $query->orderBy('views_count', 'desc');
         }, function ($query) {
