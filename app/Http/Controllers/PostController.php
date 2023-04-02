@@ -169,9 +169,16 @@ class PostController extends Controller
         $user = auth()->user();
 
         $following = $user->following()->pluck('following_id');
+        $sort = request('sort_by', 'latest');
+
+        $filters = [
+            'tag' => request('tag'),
+            'search' => request('search'),
+            'sort' => $sort
+        ];
 
         $posts = Post::whereIn('user_id', $following)
-            ->orderBy('created_at', 'desc')
+            ->filter($filters, $sort)->paginate(10)
             ->paginate(10);
 
         $posts = PostResource::collection($posts)->response()->getData(true);
