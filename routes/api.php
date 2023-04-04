@@ -5,6 +5,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfilePictureController;
+use App\Http\Controllers\VerificationCodeController;
 use App\Traits\Response;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,14 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
     //login
     Route::post('/login', [AuthController::class, 'login'])->name('login');
+    //resend verification code
+    Route::post('/resend-verify-code', [VerificationCodeController::class, 'resendVerificationCode']);
+    //verify email
+    Route::post('/verify-email', [VerificationCodeController::class, 'verifyEmail']);
+    //request reset password code
+    Route::post('/request-reset-password', [VerificationCodeController::class, 'requestPasswordResetCode']);
+    //reset password
+    Route::post('/reset-password', [VerificationCodeController::class, 'resetPassword']);
 
     //view profile
     Route::get('/profile/{user}', [AuthController::class, 'viewProfile']);
