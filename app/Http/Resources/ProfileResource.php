@@ -22,6 +22,7 @@ class ProfileResource extends JsonResource
             "email" => $this->email,
             "username" => $this->username,
             "profile_picture" => $this->profilePicture->url ?? null,
+            'email_verified' => (bool)$this->email_verified_at,
             "bio" => $this->bio,
             "already_follow" => $this->followsUser(),
             "follows_you" => $this->userFollows(),

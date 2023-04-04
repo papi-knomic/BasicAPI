@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\ForceJsonResponse;
 use App\Http\Middleware\GetCurrentUserFromToken;
+use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 
@@ -67,6 +68,6 @@ class Kernel extends HttpKernel
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'verified' => EnsureEmailIsVerified::class,
     ];
 }

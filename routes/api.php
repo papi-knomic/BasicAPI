@@ -49,7 +49,7 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
 
 
     //protected routes
-    Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::prefix('account')->group(function () {
             //get user followers
             Route::get('/followers', [FollowerController::class, 'getFollowers'])->name('profile.followers');
