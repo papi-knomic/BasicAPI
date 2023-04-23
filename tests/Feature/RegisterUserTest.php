@@ -36,43 +36,45 @@ class RegisterUserTest extends TestCase
         $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY );
     }
 
-    public function test_firstname_missing() {
+    public function test_firstname_missing()
+    {
         $this->post( $this->endpoint )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['first_name']]);
     }
 
-    public function test_lastname_missing() {
+    public function test_lastname_missing()
+    {
         $this->post( $this->endpoint )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['last_name']]);
     }
 
 
-    public function test_username_missing() {
+    public function test_username_missing()
+    {
         $this->post( $this->endpoint )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['username']]);
     }
 
-    public function test_username_is_not_unique() {
-        $user = $this->createUser();
-
-        $this->post( $this->endpoint, ['username' => $user->username ] )
+    public function test_username_is_not_unique()
+    {
+        $this->post( $this->endpoint, ['username' => $this->user->username ] )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['username']]);
     }
 
-    public function test_email_missing() {
+    public function test_email_missing()
+    {
         $this->post( $this->endpoint )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['email']]);
     }
 
-    public function test_email_is_not_unique() {
-        $user = $this->createUser();
-
-        $this->post( $this->endpoint, ['email' => $user->email ] )
+    public function test_email_is_not_unique()
+    {
+        $this->post( $this->endpoint, ['email' => $this->user->email ] )
             ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonStructure(['errors'=>['email']]);
     }
@@ -116,8 +118,7 @@ class RegisterUserTest extends TestCase
 
     public function test_bio_must_be_at_least_fifty_characters()
     {
-        $faker = Faker::create();
-        $text = $faker->text( 40 );
+        $text = 'Fake bio';
         $response = $this->post($this->endpoint, [
                 'bio' => $text
             ]

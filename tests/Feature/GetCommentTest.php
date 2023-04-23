@@ -6,10 +6,13 @@ use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class GetCommentTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected $user;
 
     protected function setUp(): void
@@ -29,16 +32,17 @@ class GetCommentTest extends TestCase
         $comment = Comment::factory()->create();
         $response = $this->get(route('comment.show', ['comment' => $comment]));
 
-        $response->assertStatus(self::HTTP_REDIRECT);
+        $response->assertStatus(Response::HTTP_FOUND);
     }
 
     public function test_get_single_comment_success()
     {
-        $this->be($this->user);
         $comment = Comment::factory()->create();
-        $response = $this->get(route('comment.show', ['comment' => $comment]));
+        $response = $this
+            ->actingAs($this->user)
+            ->get(route('comment.show', ['comment' => $comment]));
 
-        $response->assertStatus(self::HTTP_OK);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     public function test_get_post_comments_endpoint()
@@ -46,18 +50,20 @@ class GetCommentTest extends TestCase
         $post = Post::factory()->create();
         $response = $this->get(route('comment.index', ['post' => $post]));
 
-        $response->assertStatus(self::HTTP_REDIRECT);
+        $response->assertStatus(Response::HTTP_FOUND);
     }
 
 
     public function test_get_post_comments_success()
     {
-        $this->be($this->user);
         $post = Post::factory()->create();
         Comment::factory()->count(5)->create(['post_id' => $post->id]);
-        $response = $this->get(route('comment.index', ['post' => $post]));
+
+        $response = $this
+            ->actingAs($this->user)
+            ->get(route('comment.index', ['post' => $post]));
 
 
-        $response->assertStatus(self::HTTP_OK);
+        $response->assertStatus(Response::HTTP_OK);
     }
 }

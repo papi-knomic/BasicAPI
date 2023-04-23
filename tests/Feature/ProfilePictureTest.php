@@ -30,16 +30,18 @@ class ProfilePictureTest extends TestCase
      */
     public function test_endpoint()
     {
-        $this->be( $this->user );
-        $response = $this->post($this->endpoint);
+        $response = $this
+            ->actingAs($this->user)
+            ->post($this->endpoint);
 
         $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_image_is_missing()
     {
-        $this->be( $this->user );
-        $response = $this->post($this->endpoint);
+        $response = $this
+            ->actingAs($this->user)
+            ->post($this->endpoint);
 
         $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors('image');
@@ -49,8 +51,9 @@ class ProfilePictureTest extends TestCase
     {
         $file = UploadedFile::fake()->create('fake.txt', 2000, 'text/plain');
 
-        $this->be( $this->user );
-        $response = $this->post($this->endpoint, [
+        $response = $this
+            ->actingAs($this->user)
+            ->post($this->endpoint, [
             'image' => $file
         ]);
 
@@ -76,7 +79,6 @@ class ProfilePictureTest extends TestCase
         // Create a fake image file
         $file = UploadedFile::fake()->image('test.jpg');
 
-        $this->be( $this->user );
         $uuid = Factory::create()->uuid();
         // Set up the mock response
         Http::fake([
@@ -87,7 +89,9 @@ class ProfilePictureTest extends TestCase
         ]);
 
         // Make the request to the endpoint
-        $response = $this->post($this->endpoint, [
+        $response = $this
+            ->actingAs($this->user)
+            ->post($this->endpoint, [
             'image' => $file,
         ]);
 
@@ -104,7 +108,6 @@ class ProfilePictureTest extends TestCase
 
     public function test_profile_picture_upload_fails_when_cloudinary_api_returns_failed_response()
     {
-        $this->be( $this->user );
         // Arrange
         $fakeFile = UploadedFile::fake()->image('profile.jpg');
         Http::fake([
@@ -112,7 +115,9 @@ class ProfilePictureTest extends TestCase
         ]);
 
         // Act
-        $response = $this->post($this->endpoint, [
+        $response = $this
+            ->actingAs($this->user)
+            ->post($this->endpoint, [
             'image' => $fakeFile,
         ]);
 
@@ -126,9 +131,9 @@ class ProfilePictureTest extends TestCase
 
     public function test_get_user_profile_picture_does_not_exist()
     {
-        $this->be( $this->user );
-
-        $response = $this->get( $this->endpoint );
+        $response = $this
+            ->actingAs($this->user)
+            ->get( $this->endpoint );
 
         $response->assertStatus(self::HTTP_NOT_FOUND);
     }
@@ -138,13 +143,14 @@ class ProfilePictureTest extends TestCase
     {
         // Given we have an authenticated user
         $user = $this->user;
-        $this->be($user);
 
         // And the user has a profile picture
         $profilePicture = ProfilePicture::factory()->create(['user_id' => $user->id]);
 
         // When we make a GET request to the show method
-        $response = $this->get($this->endpoint);
+        $response = $this
+            ->actingAs($this->user)
+            ->get($this->endpoint);
 
         // Then we should receive a JSON response with the profile picture URL
         $response->assertStatus(self::HTTP_OK)

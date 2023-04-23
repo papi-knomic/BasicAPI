@@ -7,6 +7,7 @@ use App\Models\Post;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class AddCommentTest extends TestCase
@@ -26,89 +27,90 @@ class AddCommentTest extends TestCase
      *
      * @return void
      */
-    public function test_endpoint()
+    public function test_store_comment_endpoint()
     {
         $post = Post::factory()->create();
         $response = $this->post( route('comment.store', ['post' => $post->id]) );
 
-        $response->assertStatus(self::HTTP_REDIRECT );
+        $response->assertStatus(Response::HTTP_FOUND );
     }
 
 
-    public function test_wrong_post_passed()
+    public function test_can_not_add_comment_if_wrong_post_passed()
     {
-        $this->be( $this->user );
 
-        $response = $this->post(route('comment.store', ['post'=> '10000' ]));
+        $response = $this
+            ->actingAs($this->user)
+            ->post(route('comment.store', ['post'=> '10000' ]));
 
-        $response->assertStatus(self::HTTP_NOT_FOUND );
+        $response->assertStatus(Response::HTTP_NOT_FOUND );
     }
 
-    public function test_comment_body_missing()
+    public function test_can_not_add_comment_if_body_missing()
     {
-        $this->be( $this->user );
-
         $post = Post::factory()->create();
-        $response = $this->post(route('comment.store', ['post' => $post->id]));
+        $response = $this
+            ->actingAs($this->user)
+            ->post(route('comment.store', ['post' => $post->id]));
 
-        $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY)
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors('body');
     }
 
-    public function test_comment_body_less_than_10()
+    public function test_can_not_add_comment_if_body_less_than_10()
     {
-        $this->be( $this->user );
-
         $post = Post::factory()->create();
         $body = Factory::create()->text(5);
-        $response = $this->post(route('comment.store', ['post' => $post->id]), ['body' => $body]);
+        $response = $this
+            ->actingAs($this->user)
+            ->post(route('comment.store', ['post' => $post->id]), ['body' => $body]);
 
-        $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY)
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors('body');
     }
 
-    public function test_wrong_parent_id_passed()
+    public function test_can_not_add_comment_if_wrong_parent_id_passed()
     {
-        $this->be( $this->user );
-
         $post = Post::factory()->create();
         $body = Factory::create()->sentence();
 
-        $response = $this->post(route('comment.store', ['post' => $post->id]), [
+        $response = $this
+            ->actingAs($this->user)
+            ->post(route('comment.store', ['post' => $post->id]), [
             'body' => $body,
             'parent_id' => 1000
         ]);
 
-        $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY)
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors('parent_id');
     }
 
     public function test_comment_added_success()
     {
-        $this->be( $this->user );
-
         $post = Post::factory()->create();
-        $body = Factory::create()->sentence();
+        $body = "This is a valid comment.";
 
-        $response = $this->post(route('comment.store', ['post' => $post->id]), [
+        $response = $this
+            ->actingAs($this->user)
+            ->post(route('comment.store', ['post' => $post->id]), [
             'body' => $body,
         ]);
 
-        $response->assertStatus(self::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_CREATED);
     }
 
     public function test_comment_added_to_parent_success()
     {
-        $this->be( $this->user );
-
         $post = Post::factory()->create();
         $parentComment = Comment::factory()->create(['post_id'=>$post->id]);
         $comment = Comment::factory()->raw(['post_id' => $post->id]);
         $comment['parent_id'] = $parentComment->id;
 
-        $response = $this->post(route('comment.store', ['post' => $post->id]), $comment);
+        $response = $this
+            ->actingAs($this->user)
+            ->post(route('comment.store', ['post' => $post->id]), $comment);
 
-        $response->assertStatus(self::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_CREATED);
     }
 
     public function test_comment_added_to_child_error()
@@ -124,8 +126,10 @@ class AddCommentTest extends TestCase
         $newComment['parent_id'] = $childComment->id;
 
 
-        $response = $this->post(route('comment.store', ['post' => $post->id]), $newComment);
+        $response = $this
+            ->actingAs($this->user)
+            ->post(route('comment.store', ['post' => $post->id]), $newComment);
 
-        $response->assertStatus(self::HTTP_BAD_REQUEST );
+        $response->assertStatus(Response::HTTP_BAD_REQUEST );
     }
 }

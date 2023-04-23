@@ -32,16 +32,18 @@ class PostCreateTest extends TestCase
      */
     public function test_create_post_endpoint()
     {
-        $this->be( $this->user );
-        $response = $this->post($this->endpoint);
+        $response = $this
+            ->actingAs($this->user)
+            ->post($this->endpoint);
 
         $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_title_missing()
     {
-        $this->be( $this->user );
-        $response = $this->post($this->endpoint);
+        $response = $this
+            ->actingAs($this->user)
+            ->post($this->endpoint);
 
         $response->assertStatus( self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonValidationErrors('title');
@@ -50,11 +52,12 @@ class PostCreateTest extends TestCase
 
     public function test_title_characters_more_than_255()
     {
-        $this->be( $this->user );
         $faker = Faker::create();
         $text = $faker->text( 270 );
         $specificLengthString = str_pad($text, 270, "a1");
-        $response = $this->post($this->endpoint, ['title' => $specificLengthString]);
+        $response = $this
+            ->actingAs($this->user)
+            ->post($this->endpoint, ['title' => $specificLengthString]);
 
         $response->assertStatus( self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonValidationErrors('title');
@@ -62,8 +65,9 @@ class PostCreateTest extends TestCase
 
     public function test_body_missing()
     {
-        $this->be( $this->user );
-        $response = $this->post($this->endpoint);
+        $response = $this
+            ->actingAs($this->user)
+            ->post($this->endpoint);
 
         $response->assertStatus( self::HTTP_UNPROCESSABLE_ENTITY )
             ->assertJsonValidationErrors('body');
@@ -71,9 +75,10 @@ class PostCreateTest extends TestCase
 
     public function test_post_create_success()
     {
-        $this->be( $this->user );
         $post = Post::factory()->raw();
-        $response = $this->post($this->endpoint, $post);
+        $response = $this
+            ->actingAs($this->user)
+            ->post($this->endpoint, $post);
 
         $response->assertStatus(self::HTTP_CREATED )
             ->assertJsonStructure(['data' => ['title']]);
@@ -81,9 +86,8 @@ class PostCreateTest extends TestCase
 
     public function test_post_slug_success()
     {
-        $this->be( $this->user );
         $post = Post::factory()->raw();
-        $firstPost = json_decode( $this->post($this->endpoint, $post )->getContent() );
+        $firstPost = json_decode($this->actingAs($this->user)->post($this->endpoint, $post )->getContent());
         $slug = $firstPost->data->slug;
 
         $secondSlug = generatePostSlug( $firstPost->data->title );

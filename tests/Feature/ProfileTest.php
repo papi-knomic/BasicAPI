@@ -43,21 +43,21 @@ class ProfileTest extends TestCase
 
     public function test_profile_update_success()
     {
-        $this->be( $this->user );
-
         $userData = User::factory()->raw();
 
-        $response = $this->post($this->endpoint, $userData);
+        $response = $this
+            ->actingAs($this->user)
+            ->post($this->endpoint, $userData);
         $response->assertStatus(self::HTTP_CREATED );
     }
 
     public function test_get_profile_success()
     {
-        $this->be( $this->user );
-
         $userData = User::factory()->raw();
 
-        $response = $this->get($this->endpoint, $userData);
+        $response = $this
+            ->actingAs($this->user)
+            ->get($this->endpoint, $userData);
         $response->assertStatus(self::HTTP_OK )
             ->assertJsonStructure(['token']);
     }

@@ -25,10 +25,9 @@ class PostCreateTest extends TestCase
 
     public function test_entity_created_into_database()
     {
-        $this->be( $this->user );
         $post = Post::factory()->raw();
 
-        $result = json_decode( $this->post($this->endpoint, $post )->getContent() );
+        $result = json_decode($this->actingAs($this->user)->post($this->endpoint, $post )->getContent());
 
         $this->assertDatabaseHas('posts',[ 'id' => $result->data->id ] );
     }

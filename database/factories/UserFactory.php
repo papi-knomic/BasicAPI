@@ -17,13 +17,6 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $randomVerification = [ null, Carbon::now() ];
-        // Get a random index between 0 and 1
-        $randomIndex = rand(0, 1);
-
-        // Get the randomly picked data using the random index
-        $randomData = $randomVerification[$randomIndex];
-
         return [
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
@@ -33,7 +26,7 @@ class UserFactory extends Factory
             'profile_picture' => null,
             'bio' => $this->faker->text,
             'remember_token' => Str::random(10),
-            'email_verified_at' => $randomData
+            'email_verified_at' => Carbon::now()
         ];
     }
 

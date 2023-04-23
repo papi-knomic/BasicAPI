@@ -10,6 +10,7 @@ use Tests\TestCase;
 
 class DeletePostTest extends TestCase
 {
+    use RefreshDatabase;
 
     protected $endpoint = 'api/post';
 
@@ -37,35 +38,36 @@ class DeletePostTest extends TestCase
 
     public function test_user_not_post_owner()
     {
-        $this->be( $this->user );
-
         $user = User::factory()->create();
         $postData = Post::factory()->raw();
         $post = $user->posts()->create( $postData );
         $postID = $post->id;
 
-        $response = $this->delete( $this->endpoint."/$postID" );
+        $response = $this
+            ->actingAs($this->user)
+            ->delete( $this->endpoint."/$postID" );
 
         $response->assertForbidden();
     }
 
     public function test_post_not_found()
     {
-        $this->be( $this->user );
-
         $fakePostID = 9999;
-        $response = $this->delete( $this->endpoint."/$fakePostID" );
+        $response = $this
+            ->actingAs($this->user)
+            ->delete( $this->endpoint."/$fakePostID" );
 
         $response->assertNotFound();
     }
 
     public function test_post_delete_successfully()
     {
-        $this->be( $this->user );
         $postData = Post::factory()->raw();
         $post = $this->user->posts()->create($postData);
         $postID = $post->id;
-        $response = $this->delete( $this->endpoint."/$postID" );
+        $response = $this
+            ->actingAs($this->user)
+            ->delete( $this->endpoint."/$postID" );
 
         $response->assertOk();
     }

@@ -24,13 +24,12 @@ class AddCommentTest extends TestCase
 
     public function test_entity_created_into_database()
     {
-        $this->be( $this->user );
         $post = Post::factory()->create();
-        $body = Factory::create()->text();
+        $body = 'This is a valid comment body';
 
-        $result = json_decode( $this->post(route('comment.store', ['post' => $post->id]), [
+        $result = json_decode($this->actingAs($this->user)->post(route('comment.store', ['post' => $post->id]), [
             'body' => $body,
-        ])->getContent() );
+        ])->getContent());
 
         $this->assertDatabaseHas('posts',[ 'id' => $result->data->id ] );
     }

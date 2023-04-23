@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Comment;
+use App\Models\Post;
 use App\Models\User;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,9 +28,12 @@ class UpdateCommentTest extends TestCase
      */
     public function test_endpoint()
     {
-        $this->be( $this->user );
-        $comment = Comment::factory()->create();
-        $response = $this->patch(route('comment.update', ['comment' => $comment]));
+        $post = Post::factory()->create();
+        $user = User::factory()->create();
+        $comment = Comment::factory()->create(['post_id'=>$post->id, 'user_id' => $user->id]);
+        $response = $this
+            ->actingAs($this->user)
+            ->patch(route('comment.update', ['comment' => $comment]));
 
 
         $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY);
@@ -38,9 +42,12 @@ class UpdateCommentTest extends TestCase
 
     public function test_body_missing()
     {
-        $this->be( $this->user );
-        $comment = Comment::factory()->create();
-        $response = $this->patch(route('comment.update', ['comment' => $comment]));
+        $post = Post::factory()->create();
+        $user = User::factory()->create();
+        $comment = Comment::factory()->create(['post_id'=>$post->id, 'user_id' => $user->id]);
+        $response = $this
+            ->actingAs($this->user)
+            ->patch(route('comment.update', ['comment' => $comment]));
 
 
         $response->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY)
@@ -50,9 +57,10 @@ class UpdateCommentTest extends TestCase
     public function test_user_not_comment_owner()
     {
         $comment = Comment::factory()->create(['user_id' => User::factory()->create()->id]);
-        $this->be( $this->user );
         $body = Factory::create()->text();
-        $response = $this->patch(route('comment.update', ['comment' => $comment]), ['body' => $body]);
+        $response = $this
+            ->actingAs($this->user)
+            ->patch(route('comment.update', ['comment' => $comment]), ['body' => $body]);
 
         $response->assertStatus(self::HTTP_FORBIDDEN);
     }
@@ -60,12 +68,14 @@ class UpdateCommentTest extends TestCase
     public function test_comment_updated_successfully()
     {
         $user = $this->user;
+        $post = Post::factory()->create();
 
-        $comment = Comment::factory()->create(['user_id' => $user->id]);
-        $this->be( $user );
+        $comment = Comment::factory()->create(['post_id'=>$post->id, 'user_id' => $user->id]);
 
         $body = Factory::create()->text;
-        $response = $this->patch(route('comment.update', ['comment' => $comment]), ['body' => $body]);
+        $response = $this
+            ->actingAs($this->user)
+            ->patch(route('comment.update', ['comment' => $comment]), ['body' => $body]);
 
         $response->assertStatus(self::HTTP_OK);
     }

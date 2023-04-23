@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 use Faker\Factory as Faker;
 
@@ -24,14 +25,14 @@ class LoginUserTest extends TestCase
 
     public function test_login_endpoint()
     {
-        $this->post( $this->endpoint )
-            ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY );
+        $this->post($this->endpoint)
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_email_missing()
     {
         $this->post( $this->endpoint )
-            ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors('email');
     }
 
@@ -45,14 +46,14 @@ class LoginUserTest extends TestCase
         ];
 
         $this->post( $this->endpoint, $login )
-            ->assertStatus( self::HTTP_UNPROCESSABLE_ENTITY )
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors('email');
     }
 
     public function test_password_missing()
     {
-        $this->post( $this->endpoint )
-            ->assertStatus(self::HTTP_UNPROCESSABLE_ENTITY )
+        $this->post($this->endpoint)
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors('password');
     }
 
@@ -65,8 +66,8 @@ class LoginUserTest extends TestCase
             'password' => 'pass'
         ];
 
-        $this->post( $this->endpoint, $login )
-            ->assertStatus(self::HTTP_BAD_REQUEST);
+        $this->post($this->endpoint, $login)
+            ->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
     public function test_login_success()
@@ -78,8 +79,8 @@ class LoginUserTest extends TestCase
             'password' => 'password'
         ];
 
-        $this->post( $this->endpoint, $login )
-            ->assertStatus(self::HTTP_OK)
+        $this->post($this->endpoint, $login)
+            ->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure(['token']);
     }
 
