@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostLiked;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Jobs\IncrementPostViewJob;
@@ -137,6 +138,7 @@ class PostController extends Controller
         }
 
         $user->like($post);
+        event(new PostLiked($post));
 
         return Response::successResponse('Post liked successfully' );
     }
