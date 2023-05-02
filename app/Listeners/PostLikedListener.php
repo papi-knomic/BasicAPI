@@ -3,9 +3,11 @@
 namespace App\Listeners;
 
 use App\Events\PostLiked;
+use App\Notifications\LikedPostNotification;
 use App\Notifications\PostLikedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Notification;
 
 class PostLikedListener
 {
@@ -22,7 +24,7 @@ class PostLikedListener
     /**
      * Handle the event.
      *
-     * @param  \App\Events\PostLiked  $event
+     * @param PostLiked $event
      * @return void
      */
     public function handle(PostLiked $event)
@@ -31,8 +33,9 @@ class PostLikedListener
 
         // Check if the user who liked the post is not the same as the user who created the post
         if ($post->user_id !== auth()->id()) {
+            $user = $post->user;
             // Send the notification to the user who owns the post
-            $post->user->notify(new PostLikedNotification($post));
+           Notification::send( $user, new LikedPostNotification($post, $event->user));
         }
     }
 }

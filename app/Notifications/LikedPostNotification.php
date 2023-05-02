@@ -3,25 +3,28 @@
 namespace App\Notifications;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PostLikedNotification extends Notification implements ShouldQueue
+class LikedPostNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $post;
+    public $user;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Post $post)
+    public function __construct(Post $post, User $user)
     {
         $this->post = $post;
+        $this->user = $user;
     }
 
     /**
@@ -44,30 +47,18 @@ class PostLikedNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [
-            //
-        ];
-    }
 
-    public function toDatabase($notifiable): array
+    public function toArray($notifiable): array
     {
         return [
-            'message' => 'Your post has been liked',
+            'message' => 'Your post has been liked!',
             'post_id' => $this->post->id,
-            'user_id' => auth()->id()
+            'user' => $this->user
         ];
     }
 }

@@ -138,7 +138,7 @@ class PostController extends Controller
         }
 
         $user->like($post);
-        event(new PostLiked($post));
+        event(new PostLiked($post, $user));
 
         return Response::successResponse('Post liked successfully' );
     }

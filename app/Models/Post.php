@@ -72,4 +72,8 @@ class Post extends Model
         return $this->hasMany(Comment::class)->orderBy('created_at', 'desc')->whereNull('parent_id');
     }
 
+    public function notifiable()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
