@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostCommented;
 use App\Http\Requests\AddCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
@@ -49,7 +50,8 @@ class CommentController extends Controller
 
             $commentData['post_id'] = $parentComment->post_id;
         }
-        Comment::create($commentData);
+        $comment = Comment::create($commentData);
+        event( new PostCommented($post, auth()->user(), $comment ));
 
         $postResource = new PostResource($post);
 
