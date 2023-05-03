@@ -2,84 +2,87 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
-use Illuminate\Http\Request;
+use App\Traits\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function index()
+    public function index() : JsonResponse
     {
-        //
+        $user = auth()->user();
+
+        $notifications = $user->notifications;
+        $notifications =  NotificationResource::collection($notifications)->response()->getData(true);
+
+        return Response::successResponseWithData($notifications);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display all read notifications
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function create()
+    public function read() : JsonResponse
     {
-        //
+        $user = auth()->user();
+
+        $notifications = $user->readNotifications;
+        $notifications =  NotificationResource::collection($notifications)->response()->getData(true);
+
+        return Response::successResponseWithData($notifications);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display all unread notifications.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function unread() : JsonResponse
     {
-        //
+        $user = auth()->user();
+
+        $notifications = $user->unreadNotifications;
+        $notifications =  NotificationResource::collection($notifications)->response()->getData(true);
+
+        return Response::successResponseWithData($notifications);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Notification  $notification
-     * @return \Illuminate\Http\Response
+     * @param Notification $notification
+     * @return JsonResponse
      */
-    public function show(Notification $notification)
+    public function show(Notification $notification) : JsonResponse
     {
-        //
+        $notification = new NotificationResource($notification);
+
+        return Response::successResponseWithData($notification);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Notification  $notification
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Notification $notification)
+    public function mark(DatabaseNotification $notification) : JsonResponse
     {
-        //
+        if ( $notification->notifiable_id === auth()->id() ) {
+            $notification->markAsRead();
+            return Response::successResponse('Notification marked as read');
+        }
+
+        return Response::errorResponse('Something bad happened', 400);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Notification  $notification
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Notification $notification)
+    public function markAll() : JsonResponse
     {
-        //
-    }
+        $user = auth()->user();
+        $user->unreadNotifications->markAsRead();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Notification  $notification
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Notification $notification)
-    {
-        //
+        return Response::successResponse('Notifications marked as read');
     }
 }

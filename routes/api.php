@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowerController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfilePictureController;
 use App\Http\Controllers\VerificationCodeController;
@@ -106,6 +107,24 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
             Route::patch('/{comment}', [ CommentController::class, 'update' ])->name('comment.update');
             //delete comment
             Route::delete('/{comment}', [ CommentController::class, 'destroy' ])->name('comment.destroy');
+        });
+
+        Route::prefix('notifications')->group(function () {
+            //Get user notifications
+            Route::get('/', [NotificationController::class, 'index'])->name('notifications.index');
+            // get unread notifications
+            Route::get('/unread', [NotificationController::class, 'unread'])->name('notifications.unread');
+            // get all read notifications
+            Route::get('/read', [NotificationController::class, 'read'])->name('notifications.read');
+            // mark all notifications
+            Route::post('/', [NotificationController::class, 'markAll'])->name('notifications.markAll');
+        });
+
+        Route::prefix('notification')->group(function () {
+            //show single notification
+            Route::get('/{notification}', [NotificationController::class, 'show'])->name('notification.show');
+            // mark single notification
+            Route::post('/{notification}', [NotificationController::class,'mark'])->name('notification.mark');
         });
     });
 });

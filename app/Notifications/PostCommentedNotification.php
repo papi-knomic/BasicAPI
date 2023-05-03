@@ -27,6 +27,7 @@ class PostCommentedNotification extends Notification implements ShouldQueue
     {
         $this->post = $post;
         $this->user = $user;
+        $this->comment = $comment;
     }
 
     /**

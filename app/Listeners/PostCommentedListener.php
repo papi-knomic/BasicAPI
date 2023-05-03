@@ -33,9 +33,8 @@ class PostCommentedListener
 
         // Check if the user who liked the post is not the same as the user who created the post
         if ($post->user_id !== auth()->id()) {
-            $user = $post->user;
             // Send the notification to the user who owns the post
-            Notification::send($user, new PostCommentedNotification($post, $event->user, $event->comment));
+            $post->user->notify(new PostCommentedNotification($post, $event->user, $event->comment));
         }
     }
 }
