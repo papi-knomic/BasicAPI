@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Events\PostCommented;
+use App\Events\PostCreated;
 use App\Events\PostLiked;
 use App\Listeners\PostCommentedListener;
+use App\Listeners\PostCreatedListener;
 use App\Listeners\PostLikedListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -27,6 +29,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         PostCommented::class => [
             PostCommentedListener::class
+        ],
+        PostCreated::class => [
+            PostCreatedListener::class
         ]
     ];
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostCreated;
 use App\Events\PostLiked;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Resources\PostResource;
@@ -55,7 +56,9 @@ class PostController extends Controller
         $fields = $request->validated();
         $fields['user_id'] = auth()->id();
         $post = $this->postRepository->create($fields);
+        event(new PostCreated($post, $post->user));
         $post = new PostResource($post);
+
         return Response::successResponseWithData($post, 'Post created', 201);
     }
 

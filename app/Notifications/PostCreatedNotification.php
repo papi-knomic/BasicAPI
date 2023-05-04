@@ -2,23 +2,29 @@
 
 namespace App\Notifications;
 
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PostCreatedNotification extends Notification
+class PostCreatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+
+    public $post;
+    public $user;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct( Post $post, User $user )
     {
-        //
+        $this->post = $post;
+        $this->user = $user;
     }
 
     /**
@@ -29,7 +35,7 @@ class PostCreatedNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -55,7 +61,9 @@ class PostCreatedNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            'message' => "{$this->user->username} made a new post",
+            'user_id' => $this->user->id,
+            'post_id' => $this->post->id
         ];
     }
 }
