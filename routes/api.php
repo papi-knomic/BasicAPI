@@ -6,6 +6,7 @@ use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfilePictureController;
+use App\Http\Controllers\UserSubscriptionController;
 use App\Http\Controllers\VerificationCodeController;
 use App\Traits\Response;
 use Illuminate\Support\Facades\Route;
@@ -77,6 +78,10 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
             Route::post('/{user}/follow', [FollowerController::class, 'follow'])->name('user.follow');
             //follow user
             Route::post('/{user}/unfollow', [FollowerController::class, 'unfollow'])->name('user.unfollow');
+            //turn on post notification
+            Route::post('/{user}/subscribe', [UserSubscriptionController::class, 'subscribe'])->name('user.subscribe');
+            //turn off post notification
+            Route::post('/{user}/unsubscribe', [UserSubscriptionController::class, 'unsubscribe'])->name('user.unsubscribe');
         });
 
         Route::get('posts/following', [PostController::class, 'following'])->name('posts.following');

@@ -27,7 +27,8 @@ class ProfileResource extends JsonResource
             "already_follow" => $this->followsUser(),
             "follows_you" => $this->userFollows(),
             'followers' => count( $this->followers ),
-            'following' => count( $this->following )
+            'following' => count( $this->following ),
+            'post_notification' => $this->checkPostNotification()
         ];
     }
 
@@ -47,5 +48,13 @@ class ProfileResource extends JsonResource
         }
 
         return auth()->user()->isFollowedByUser( $this->id );
+    }
+
+    private function checkPostNotification() : bool
+    {
+        if ( !auth()->id() ) {
+            return false;
+        }
+        return $this->isSubscribedByUser(auth()->id());
     }
 }

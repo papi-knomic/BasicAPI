@@ -185,4 +185,15 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->following()->wherePivot('following_id', $userId)->exists();
     }
 
+    public function postNotificationUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_subscriptions', 'subscribe_id', 'subscriber_id')
+            ->withTimestamps();
+    }
+
+    public function isSubscribedByUser(int $userId) : bool
+    {
+        return $this->postNotificationUsers()->wherePivot('subscriber_id', $userId)->exists();
+    }
+
 }

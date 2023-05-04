@@ -12,9 +12,9 @@ class NotificationResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param  Request  $request
-     * @return array|Arrayable|\JsonSerializable
+     * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         $data = $this->checkData($this->data);
         return [
