@@ -30,6 +30,7 @@ class PostResource extends JsonResource
             'liked_by_user' => $this->likedByUser($request->user()),
             'disliked_by_user' => $this->dislikedByUser($request->user()),
             'comments' => $request->user() ? CommentResource::collection( $this->comments ) : [],
+            'media' => $this->attachments ? PostAttachmentResource::collection( $this->attachments ) : [],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

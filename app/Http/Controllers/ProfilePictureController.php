@@ -10,6 +10,7 @@ use App\Traits\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class ProfilePictureController extends Controller
 {
@@ -29,12 +30,14 @@ class ProfilePictureController extends Controller
         $url = "https://api.cloudinary.com/v1_1/$cloudName/image/upload";
         $filePath = $file->getRealPath();
         $base64 = base64_encode( file_get_contents( $filePath ) );
+        $uuid = Str::uuid();
 
         $response = Http::withoutVerifying()->post( $url, [
             'api_key' => config('cloudinary.api_key'),
             'file' => "data:{$file->getClientMimeType()};base64,{$base64}",
             'multiple' => true,
-            'upload_preset' => config('cloudinary.upload_preset')
+            'upload_preset' => config('cloudinary.upload_preset'),
+            'public_id' => 'profile-picture' . '/' . $uuid
         ]);
         if ( $response->failed() ){
             return Response::errorResponse('Something bad happened', 400 );

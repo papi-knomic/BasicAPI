@@ -8,6 +8,7 @@ use App\Http\Requests\CreatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Jobs\IncrementPostViewJob;
 use App\Models\Post;
+use App\Models\PostAttachment;
 use App\Models\User;
 use App\Repositories\PostRepository;
 use App\Traits\Response;
@@ -50,12 +51,26 @@ class PostController extends Controller
      *
      * @param CreatePostRequest $request
      * @return JsonResponse
+     * @throws \Exception
      */
     public function store(CreatePostRequest $request): JsonResponse
     {
         $fields = $request->validated();
         $fields['user_id'] = auth()->id();
         $post = $this->postRepository->create($fields);
+        $media = [];
+        if ($request->hasFile('files')) {
+            $files = $request->file('files');;
+            foreach ($files as $file) {
+                $attachment = addPostAttachment($file);
+               PostAttachment::create( [
+                    'post_id' => $post->id,
+                    'media_id' => $attachment['public_id'],
+                    'url' => $attachment['secure_url'],
+                    'media_type' => $file->getMimeType()
+                ]);
+            }
+        }
         event(new PostCreated($post, $post->user));
         $post = new PostResource($post);
 
