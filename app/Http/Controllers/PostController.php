@@ -58,7 +58,6 @@ class PostController extends Controller
         $fields = $request->validated();
         $fields['user_id'] = auth()->id();
         $post = $this->postRepository->create($fields);
-        $media = [];
         if ($request->hasFile('files')) {
             $files = $request->file('files');;
             foreach ($files as $file) {
